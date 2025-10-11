@@ -14,4 +14,5 @@ public class UserProfileDTO {
   private LocalDateTime registrationDate;
   private Double wallet;
   private String deliveryAddress;
+  private String phone;
 }

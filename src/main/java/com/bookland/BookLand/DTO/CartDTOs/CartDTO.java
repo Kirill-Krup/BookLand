@@ -1,5 +1,6 @@
 package com.bookland.BookLand.DTO.CartDTOs;
 
+import com.bookland.BookLand.DTO.UserDTOs.UserProfileDTO;
 import lombok.Data;
 import java.util.List;
 

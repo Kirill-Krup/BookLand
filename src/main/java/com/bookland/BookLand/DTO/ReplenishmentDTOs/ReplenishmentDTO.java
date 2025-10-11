@@ -13,6 +13,5 @@ public class ReplenishmentDTO {
   private Double amount;
   private LocalDateTime replenishmentDate;
   private PaymentMethod paymentMethod;
-  private String transactionId;
   private ReplenishmentStatus status;
 }

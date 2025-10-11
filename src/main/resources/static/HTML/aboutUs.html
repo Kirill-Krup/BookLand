@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О нас - BookStore</title>
+    <link rel="stylesheet" href="../CSS/aboutUs.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <i class="fas fa-book"></i>
+                    <span>BookStore</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="home.html" class="nav-link">Главная</a></li>
+                    <li><a href="#catalog" class="nav-link">Каталог</a></li>
+                    <li><a href="#new" class="nav-link">Новинки</a></li>
+                    <li><a href="aboutUs.html" class="nav-link active">О нас</a></li>
+                    <li><a href="#contact" class="nav-link">Контакты</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <!-- Динамическое меню пользователя -->
+                    <div class="user-menu">
+                        <!-- Меню для неавторизованных пользователей -->
+                        <div class="guest-menu" id="guestMenu">
+                            <a href="Authentication/login.html" class="btn btn-outline">Войти</a>
+                            <a href="Authentication/registration.html" class="btn btn-primary">Регистрация</a>
+                        </div>
+
+                        <!-- Меню для авторизованных пользователей -->
+                        <div class="user-profile" id="userProfile" style="display: none;">
+                            <div class="cart-icon" id="cartIcon">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count" id="cartCount">3</span>
+                            </div>
+                            <div class="user-info" onclick="window.location.href='profile.html'">
+                                <span class="user-login" id="userLogin">Иван Петров</span>
+                                <span class="user-balance" id="userBalance">₽ 2,500</span>
+                            </div>
+                            <div class="user-avatar" onclick="window.location.href='profile.html'">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <button class="btn btn-outline logout-btn" id="logoutBtn">Выйти</button>
+                        </div>
+                    </div>
+
+                    <button class="menu-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Мы создаем
+                    <span class="highlight">читательское сообщество</span>
+                </h1>
+                <p class="hero-description">
+                    BookStore — это не просто магазин книг. Мы объединяем людей, создаем воспоминания и помогаем каждому найти свою идеальную книгу.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Книг в каталоге</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100K+</div>
+                        <div class="stat-label">Довольных клиентов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">15</div>
+                        <div class="stat-label">Лет на рынке</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="team-illustration">
+                    <div class="person person-1">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="person person-2">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="person person-3">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                    <div class="person person-4">
+                        <i class="fas fa-feather-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Story Section -->
+    <section class="our-story">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Наша история</h2>
+                <p class="section-subtitle">Как мы стали крупнейшим книжным магазином в России</p>
+            </div>
+            <div class="story-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2009</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Начало пути</h3>
+                        <p class="timeline-description">
+                            Основатели BookStore — группа друзей-энтузиастов литературы — решили создать место, где каждый сможет найти свою идеальную книгу. Начали с небольшого магазина в Москве.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2015</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Первые успехи</h3>
+                        <p class="timeline-description">
+                            Открыли онлайн-магазин и начали доставлять книги по всей России. Наша команда выросла до 25 человек, а каталог пополнился тысячами новых книг.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Цифровая трансформация</h3>
+                        <p class="timeline-description">
+                            Пандемия стала вызовом, но мы превратили её в возможность. Запустили онлайн-книжные клубы, виртуальные встречи с авторами и консультации по видеосвязи.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Сегодня</h3>
+                        <p class="timeline-description">
+                            Мы — лидеры рынка с более чем 50,000 книг в каталоге, 100,000 довольных клиентов и командой из 50+ экспертов. Но главное — мы продолжаем объединять людей через книги.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values Section -->
+    <section class="our-values">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Наши ценности</h2>
+                <p class="section-subtitle">Принципы, которыми мы руководствуемся в работе</p>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="value-title">Страсть к книгам</h3>
+                    <p class="value-description">
+                        Мы сами читаем каждую книгу перед тем, как предложить её вам. Наша страсть к литературе помогает нам находить лучшие произведения.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="value-title">Сообщество</h3>
+                    <p class="value-description">
+                        Мы создаем пространство, где читатели могут встречаться, общаться и делиться опытом. Книги объединяют людей.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="value-title">Качество</h3>
+                    <p class="value-description">
+                        Мы работаем только с проверенными издательствами и поставщиками. Каждая книга проходит тщательную проверку качества.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="value-title">Инновации</h3>
+                    <p class="value-description">
+                        Мы всегда в курсе новинок книжной индустрии и первыми предлагаем самые интересные и актуальные произведения.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="value-title">Доверие</h3>
+                    <p class="value-description">
+                        Честность и прозрачность в отношениях с клиентами — основа нашего бизнеса. Мы всегда выполняем свои обещания.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="value-title">Обучение</h3>
+                    <p class="value-description">
+                        Мы помогаем новичкам освоиться в мире литературы и постоянно развиваемся сами, изучая новые жанры и авторов.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Team Section -->
+    <section class="our-team">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Наша команда</h2>
+                <p class="section-subtitle">Знакомьтесь с людьми, которые делают BookStore особенным</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">Анна Смирнова</h3>
+                        <p class="member-position">Основатель и CEO</p>
+                        <p class="member-description">
+                            Страстный коллекционер книг с 20-летним стажем. Создала BookStore, чтобы делиться своей любовью к литературе с другими.
+                        </p>
+                        <div class="member-social">
+                            <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">Михаил Козлов</h3>
+                        <p class="member-position">Директор по маркетингу</p>
+                        <p class="member-description">
+                            Эксперт по продвижению книжных продуктов. Помогает читателям найти подходящие книги и создает увлекательный контент.
+                        </p>
+                        <div class="member-social">
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">Елена Петрова</h3>
+                        <p class="member-position">Главный консультант</p>
+                        <p class="member-description">
+                            Знает каждую книгу в нашем каталоге наизусть. Помогает клиентам выбрать идеальную книгу для любого настроения и возраста.
+                        </p>
+                        <div class="member-social">
+                            <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">Дмитрий Волков</h3>
+                        <p class="member-position">Менеджер по закупкам</p>
+                        <p class="member-description">
+                            Отслеживает новинки книжной индустрии и поддерживает отношения с издательствами. Благодаря ему у нас всегда есть самые актуальные книги.
+                        </p>
+                        <div class="member-social">
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">Игорь Новиков</h3>
+                        <p class="member-position">IT-директор</p>
+                        <p class="member-description">
+                            Разрабатывает и поддерживает наш сайт и мобильное приложение. Делает покупки книг максимально удобными и быстрыми.
+                        </p>
+                        <div class="member-social">
+                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">Мария Кузнецова</h3>
+                        <p class="member-position">Менеджер по клиентскому сервису</p>
+                        <p class="member-description">
+                            Помогает клиентам решать любые вопросы и делает процесс покупки максимально комфортным. Настоящий профессионал сервиса.
+                        </p>
+                        <div class="member-social">
+                            <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section class="achievements">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Наши достижения</h2>
+                <p class="section-subtitle">Чем мы гордимся</p>
+            </div>
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="achievement-content">
+                        <h3 class="achievement-title">Лучший книжный магазин 2023</h3>
+                        <p class="achievement-description">Награда от журнала "Книжный мир России"</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="achievement-content">
+                        <h3 class="achievement-title">5 звезд сервиса</h3>
+                        <p class="achievement-description">Средняя оценка клиентов на Яндекс.Маркете</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="achievement-content">
+                        <h3 class="achievement-title">Официальный партнер</h3>
+                        <p class="achievement-description">Более 100 ведущих издательств России</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="achievement-content">
+                        <h3 class="achievement-title">100,000+ клиентов</h3>
+                        <p class="achievement-description">Довольных покупателей по всей России</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Gallery Section -->
+    <section class="events-gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Наши мероприятия</h2>
+                <p class="section-subtitle">Моменты, которые делают наше сообщество особенным</p>
+            </div>
+            
+            <div class="carousel-container">
+                <div class="carousel-wrapper">
+                    <div class="carousel-track" id="carouselTrack">
+                        <!-- Встречи с авторами -->
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=350&fit=crop" alt="Встреча с писателем">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Встреча с Дмитрием Глуховским</h3>
+                                        <p class="carousel-date">15 марта 2024</p>
+                                        <p class="carousel-description">Автор "Метро 2033" рассказал о создании постапокалиптического мира</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=500&h=350&fit=crop" alt="Встреча с писательницей">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Встреча с Татьяной Толстой</h3>
+                                        <p class="carousel-date">22 февраля 2024</p>
+                                        <p class="carousel-description">Обсуждение современной русской литературы</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Книжные клубы -->
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=350&fit=crop" alt="Книжный клуб">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Клуб "Фантастика"</h3>
+                                        <p class="carousel-date">10 марта 2024</p>
+                                        <p class="carousel-description">Обсуждение романа "Дюна" Фрэнка Герберта</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=350&fit=crop" alt="Книжный клуб">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Клуб "Классика"</h3>
+                                        <p class="carousel-date">5 марта 2024</p>
+                                        <p class="carousel-description">Чтение и обсуждение произведений Достоевского</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Мастер-классы -->
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=500&h=350&fit=crop" alt="Мастер-класс по письму">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Мастер-класс "Как написать книгу"</h3>
+                                        <p class="carousel-date">28 февраля 2024</p>
+                                        <p class="carousel-description">Писатель Алексей Иванов поделился секретами мастерства</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=350&fit=crop" alt="Мастер-класс по иллюстрации">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Мастер-класс по книжной иллюстрации</h3>
+                                        <p class="carousel-date">20 февраля 2024</p>
+                                        <p class="carousel-description">Художник Мария Петрова научила создавать иллюстрации</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Фестивали -->
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=350&fit=crop" alt="Книжный фестиваль">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Фестиваль "Книжная весна"</h3>
+                                        <p class="carousel-date">15-17 марта 2024</p>
+                                        <p class="carousel-description">Трехдневный праздник литературы с участием 50 авторов</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=500&h=350&fit=crop" alt="Детский книжный фестиваль">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Детский книжный фестиваль</h3>
+                                        <p class="carousel-date">1-3 марта 2024</p>
+                                        <p class="carousel-description">Праздник для юных читателей с играми и конкурсами</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=500&h=350&fit=crop" alt="Встреча с молодым автором">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Встреча с молодыми авторами</h3>
+                                        <p class="carousel-date">12 февраля 2024</p>
+                                        <p class="carousel-description">Презентация дебютных романов начинающих писателей</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=350&fit=crop" alt="Клуб детской литературы">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Клуб детской литературы</h3>
+                                        <p class="carousel-date">8 февраля 2024</p>
+                                        <p class="carousel-description">Чтение сказок и обсуждение детских книг</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Дублируем первые элементы для бесшовной прокрутки -->
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=350&fit=crop" alt="Встреча с писателем">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Встреча с Дмитрием Глуховским</h3>
+                                        <p class="carousel-date">15 марта 2024</p>
+                                        <p class="carousel-description">Автор "Метро 2033" рассказал о создании постапокалиптического мира</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-item">
+                            <div class="carousel-image">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=500&h=350&fit=crop" alt="Встреча с писательницей">
+                                <div class="carousel-overlay">
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">Встреча с Татьяной Толстой</h3>
+                                        <p class="carousel-date">22 февраля 2024</p>
+                                        <p class="carousel-description">Обсуждение современной русской литературы</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Индикаторы -->
+                <div class="carousel-indicators">
+                    <span class="indicator active" data-slide="0"></span>
+                    <span class="indicator" data-slide="1"></span>
+                    <span class="indicator" data-slide="2"></span>
+                    <span class="indicator" data-slide="3"></span>
+                    <span class="indicator" data-slide="4"></span>
+                    <span class="indicator" data-slide="5"></span>
+                    <span class="indicator" data-slide="6"></span>
+                    <span class="indicator" data-slide="7"></span>
+                    <span class="indicator" data-slide="8"></span>
+                    <span class="indicator" data-slide="9"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal для просмотра изображений -->
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img class="modal-image" id="modalImage" src="" alt="">
+            <div class="modal-info">
+                <h3 class="modal-title" id="modalTitle"></h3>
+                <p class="modal-date" id="modalDate"></p>
+                <p class="modal-description" id="modalDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact CTA Section -->
+    <section class="contact-cta">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-text">
+                    <h3 class="cta-title">Готовы присоединиться к нашему сообществу?</h3>
+                    <p class="cta-description">
+                        Свяжитесь с нами, если у вас есть вопросы, предложения или вы просто хотите поговорить о книгах!
+                    </p>
+                </div>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-envelope"></i>
+                        Написать нам
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-phone"></i>
+                        Позвонить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-book"></i>
+                        <span>BookStore</span>
+                    </div>
+                    <p class="footer-description">
+                        Ваш надежный партнер в мире книг. 
+                        Мы помогаем найти идеальную книгу для каждого.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-title">Каталог</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Художественная литература</a></li>
+                        <li><a href="#">Научная литература</a></li>
+                        <li><a href="#">Детские книги</a></li>
+                        <li><a href="#">Учебники</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-title">Помощь</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Доставка и оплата</a></li>
+                        <li><a href="#">Возврат товара</a></li>
+                        <li><a href="#">Гарантии</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-title">Контакты</h4>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+7 (800) 123-45-67</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@bookstore.ru</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Москва, ул. Книжная, 1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 BookStore. Все права защищены.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Условия использования</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Carousel functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const carouselTrack = document.getElementById('carouselTrack');
+            const indicators = document.querySelectorAll('.indicator');
+            const carouselItems = document.querySelectorAll('.carousel-item');
+            
+            // Проверяем, что элементы найдены
+            if (!carouselTrack) {
+                console.error('Carousel track not found!');
+                return;
+            }
+            
+            if (indicators.length === 0) {
+                console.error('No indicators found!');
+                return;
+            }
+            
+            console.log('Found', indicators.length, 'indicators and', carouselItems.length, 'carousel items');
+            
+            let currentSlide = 0;
+            const totalSlides = 10; // Количество оригинальных слайдов (без дубликатов)
+            let autoSlideInterval;
+            
+            // Initialize carousel
+            function initCarousel() {
+                console.log('Initializing carousel with', indicators.length, 'indicators');
+                updateIndicators();
+                startAutoSlide();
+            }
+            
+            // Update indicators
+            function updateIndicators() {
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === currentSlide);
+                });
+            }
+            
+            // Go to specific slide
+            function goToSlide(slideIndex) {
+                console.log('Going to slide:', slideIndex);
+                currentSlide = slideIndex;
+                const translateX = -currentSlide * 100;
+                carouselTrack.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                carouselTrack.style.transform = `translateX(${translateX}%)`;
+                updateIndicators();
+                console.log('Applied transform:', carouselTrack.style.transform);
+            }
+            
+            // Next slide
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                goToSlide(currentSlide);
+                
+                // Reset to beginning when reaching the end
+                if (currentSlide === 0) {
+                    setTimeout(() => {
+                        carouselTrack.style.transition = 'none';
+                        carouselTrack.style.transform = 'translateX(0%)';
+                        setTimeout(() => {
+                            carouselTrack.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                        }, 50);
+                    }, 800);
+                }
+            }
+            
+            // Start auto slide
+            function startAutoSlide() {
+                autoSlideInterval = setInterval(nextSlide, 3000); // Change slide every 3 seconds
+            }
+            
+            // Stop auto slide
+            function stopAutoSlide() {
+                clearInterval(autoSlideInterval);
+            }
+            
+            // Indicator click handlers
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Indicator clicked:', index);
+                    stopAutoSlide();
+                    goToSlide(index);
+                    // Restart auto slide after a delay
+                    setTimeout(() => {
+                        startAutoSlide();
+                    }, 1000);
+                });
+            });
+            
+            // Pause on hover
+            const carouselContainer = document.querySelector('.carousel-container');
+            carouselContainer.addEventListener('mouseenter', stopAutoSlide);
+            carouselContainer.addEventListener('mouseleave', startAutoSlide);
+            
+            // Initialize carousel
+            initCarousel();
+
+            // Mobile menu toggle
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                    this.classList.toggle('active');
+                });
+            }
+
+            // Close mobile menu when clicking on links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navMenu.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                });
+            });
+
+            // User menu toggle
+            let isLoggedIn = false;
+            const guestMenu = document.getElementById('guestMenu');
+            const userProfile = document.getElementById('userProfile');
+
+            function toggleUserMenu() {
+                if (isLoggedIn) {
+                    guestMenu.style.display = 'none';
+                    userProfile.style.display = 'flex';
+                } else {
+                    guestMenu.style.display = 'flex';
+                    userProfile.style.display = 'none';
+                }
+            }
+
+            // Initialize user menu
+            toggleUserMenu();
+
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    isLoggedIn = false;
+                    toggleUserMenu();
+                });
+            }
+
+            // Login simulation
+            const loginLinks = document.querySelectorAll('.guest-menu a');
+            loginLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.textContent.includes('Войти')) {
+                        e.preventDefault();
+                        isLoggedIn = true;
+                        toggleUserMenu();
+                    }
+                });
+            });
+
+            // Cart functionality
+            const cartIcon = document.getElementById('cartIcon');
+            if (cartIcon) {
+                cartIcon.addEventListener('click', function() {
+                    window.location.href = 'profile.html';
+                });
+            }
+        });
+
+        // Modal functionality
+        function openModal(button) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDate = document.getElementById('modalDate');
+            const modalDescription = document.getElementById('modalDescription');
+
+            const galleryItem = button.closest('.gallery-item');
+            const img = galleryItem.querySelector('img');
+            const title = galleryItem.querySelector('.gallery-title').textContent;
+            const date = galleryItem.querySelector('.gallery-date').textContent;
+            const description = galleryItem.querySelector('.gallery-description').textContent;
+
+            modalImage.src = img.src;
+            modalImage.alt = img.alt;
+            modalTitle.textContent = title;
+            modalDate.textContent = date;
+            modalDescription.textContent = description;
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animation on scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.timeline-item, .value-card, .team-member, .achievement-card');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('animate-in');
+                }
+            });
+        }
+
+        // Initialize animations
+        window.addEventListener('scroll', animateOnScroll);
+        animateOnScroll();
+    </script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - BookStore</title>
+    <link rel="stylesheet" href="../../CSS/Authentication/registration.css">
+    <script src="../../JS/Authentication/registration.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="floating-books">
+            <div class="book book-1"><i class="fas fa-book"></i></div>
+            <div class="book book-2"><i class="fas fa-book-open"></i></div>
+            <div class="book book-3"><i class="fas fa-bookmark"></i></div>
+            <div class="book book-4"><i class="fas fa-feather-alt"></i></div>
+            <div class="book book-5"><i class="fas fa-scroll"></i></div>
+            <div class="book book-6"><i class="fas fa-book"></i></div>
+            <div class="book book-7"><i class="fas fa-pen-fancy"></i></div>
+            <div class="book book-8"><i class="fas fa-quill-pen"></i></div>
+        </div>
+    </div>
+
+    <!-- Registration Container -->
+    <div class="registration-container">
+        <div class="registration-card">
+            <!-- Header -->
+            <div class="registration-header">
+                <div class="logo">
+                    <i class="fas fa-book"></i>
+                    <span>BookStore</span>
+                </div>
+                <h1 class="registration-title">Создать аккаунт</h1>
+                <p class="registration-subtitle">Присоединяйтесь к нашему сообществу читателей</p>
+            </div>
+
+            <!-- Registration Form -->
+            <form class="registration-form" id="registrationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Имя
+                        </label>
+                        <input type="text" id="firstName" name="firstName" class="form-input" placeholder="Введите имя" required>
+                        <div class="input-error" id="firstNameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Фамилия
+                        </label>
+                        <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Введите фамилию" required>
+                        <div class="input-error" id="lastNameError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Логин
+                    </label>
+                    <input type="text" id="login" name="login" class="form-input" placeholder="Введите ваш логин" required>
+                    <div class="input-error" id="loginError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="Введите ваш email" required>
+                    <div class="input-error" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="form-label">
+                        <i class="fas fa-phone"></i>
+                        Телефон
+                    </label>
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="+7 (999) 123-45-67" required>
+                    <div class="input-error" id="phoneError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Пароль
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="Создайте пароль" required>
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="strength-text" id="strengthText">Введите пароль</span>
+                    </div>
+                    <div class="input-error" id="passwordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Подтвердите пароль
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Повторите пароль" required>
+                        <button type="button" class="password-toggle" id="confirmPasswordToggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="input-error" id="confirmPasswordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Адрес доставки
+                    </label>
+                    <textarea id="address" name="address" class="form-textarea" placeholder="Введите адрес для доставки книг" rows="3"></textarea>
+                    <div class="input-error" id="addressError"></div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                        <span class="checkmark"></span>
+                        Я согласен с <a href="#" class="terms-link">условиями использования</a> и <a href="#" class="terms-link">политикой конфиденциальности</a>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="newsletter" name="newsletter">
+                        <span class="checkmark"></span>
+                        Подписаться на новости и специальные предложения
+                    </label>
+                </div>
+
+                <button type="submit" class="registration-btn" id="registrationBtn">
+                    <span class="btn-text">Создать аккаунт</span>
+                    <div class="btn-loader" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+
+                <div class="divider">
+                    <span>или</span>
+                </div>
+
+                <div class="social-registration">
+                    <button type="button" class="social-btn google-btn">
+                        <i class="fab fa-google"></i>
+                        Зарегистрироваться через Google
+                    </button>
+                    <button type="button" class="social-btn vk-btn">
+                        <i class="fab fa-vk"></i>
+                        Зарегистрироваться через VK
+                    </button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="registration-footer">
+                <p>Уже есть аккаунт? <a href="login.html" class="login-link">Войти</a></p>
+                <a href="../home.html" class="back-home">
+                    <i class="fas fa-arrow-left"></i>
+                    Вернуться на главную
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon success">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="modal-title">Регистрация успешна!</h3>
+            <p class="modal-text">Добро пожаловать в BookStore! Ваш аккаунт создан.</p>
+            <button class="modal-btn" onclick="window.location.href='../home.html'">Продолжить</button>
+        </div>
+    </div>
+</body>
+</html>
+

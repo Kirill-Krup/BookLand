@@ -1,5 +1,6 @@
-package com.bookland.BookLand.Service;
+package com.bookland.BookLand.Service.impl;
 
+import com.bookland.BookLand.Exception.UserNotFoundException;
 import com.bookland.BookLand.Model.User;
 import com.bookland.BookLand.Repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +18,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        User user = userRepository.findByLogin(usernameOrEmail)
-                .orElseGet(() -> userRepository.findByEmail(usernameOrEmail)
-                        .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден")));
-        return new CustomUserDetails(user);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByLoginOrEmail(username, username)
+            .orElseThrow(() -> new UserNotFoundException(username));
+
+        return org.springframework.security.core.userdetails.User
+            .withUsername(user.getLogin())
+            .password(user.getPassword())
+            .authorities("USER")
+            .build();
     }
 }

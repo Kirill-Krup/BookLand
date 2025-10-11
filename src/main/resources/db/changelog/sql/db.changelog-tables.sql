@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset author:Kirill
+-- changeset Kirill:create-users
 CREATE TABLE users
 (
     id                BIGSERIAL PRIMARY KEY,
@@ -15,7 +15,7 @@ CREATE TABLE users
     delivery_address  TEXT
 );
 
--- changeset author:Kirill
+-- changeset Kirill:create-authors
 CREATE TABLE authors
 (
     id        BIGSERIAL PRIMARY KEY,
@@ -30,7 +30,7 @@ CREATE TABLE genres
     description TEXT
 );
 
--- changeset author:Kirill
+-- changeset Kirill:create-books
 CREATE TABLE books
 (
     id                BIGSERIAL PRIMARY KEY,
@@ -49,7 +49,7 @@ CREATE TABLE books
     updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- changeset author:Kirill
+-- changeset Kirill:create-orders
 CREATE TABLE orders
 (
     id               BIGSERIAL PRIMARY KEY,
@@ -72,7 +72,7 @@ CREATE TABLE order_items
     subtotal   DECIMAL(10, 2) GENERATED ALWAYS AS (quantity * unit_price) STORED
 );
 
--- changeset author:Kirill
+-- changeset Kirill:create-cart
 CREATE TABLE cart
 (
     id         BIGSERIAL PRIMARY KEY,
@@ -90,7 +90,7 @@ CREATE TABLE cart_items
     added_at TIMESTAMP        DEFAULT CURRENT_TIMESTAMP
 );
 
--- changeset author:Kirill
+-- changeset Kirill:create-replenishment
 CREATE TABLE replenishment
 (
     id                 BIGSERIAL PRIMARY KEY,
@@ -98,11 +98,10 @@ CREATE TABLE replenishment
     amount             DECIMAL(10, 2) NOT NULL,
     replenishment_date TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
     payment_method     VARCHAR(50),
-    transaction_id     VARCHAR(100) UNIQUE,
     status             VARCHAR(20) DEFAULT 'COMPLETED'
 );
 
--- changeset author:Kirill
+-- changeset Kirill:create-reviews
 CREATE TABLE reviews
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -120,4 +119,15 @@ CREATE TABLE wishlist
     user_id    BIGINT NOT NULL,
     book_id    BIGINT NOT NULL,
     added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- changeset Kirill:create-user-activities
+CREATE TABLE user_activities
+(
+    id          BIGSERIAL PRIMARY KEY,
+    user_id     BIGINT NOT NULL,
+    type        VARCHAR(50) NOT NULL,
+    description TEXT,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );

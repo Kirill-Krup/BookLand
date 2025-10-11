@@ -37,9 +37,6 @@ public class Replenishment {
   @Column(name = "payment_method")
   private PaymentMethod paymentMethod;
 
-  @Column(name = "transaction_id", unique = true)
-  private String transactionId;
-
   @Enumerated(EnumType.STRING)
   @Builder.Default
   private ReplenishmentStatus status = ReplenishmentStatus.COMPLETED;
