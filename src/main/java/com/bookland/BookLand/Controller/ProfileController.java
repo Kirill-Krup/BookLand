@@ -6,6 +6,8 @@ import com.bookland.BookLand.Service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +32,12 @@ public class ProfileController {
     String login = authentication.getName();
     UserAllProfileDTO profileDTO = userService.getAllProfileByLogin(login);
     return ResponseEntity.ok(profileDTO);
+  }
+
+  @PutMapping("/update")
+  public ResponseEntity<UserAllProfileDTO> updateProfile(Authentication authentication, @RequestBody UserProfileDTO userProfileDTO) {
+      UserAllProfileDTO dto= userService.updateUser(authentication.getName(), userProfileDTO);
+      return ResponseEntity.ok(dto);
   }
 
 }

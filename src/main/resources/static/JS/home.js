@@ -66,7 +66,6 @@ function createScrollProgress() {
     window.addEventListener('scroll', updateProgress);
 }
 
-// Функция для анимации элементов при скролле
 function animateOnScroll() {
     const elements = document.querySelectorAll('.book-card, .category-card, .section-title, .review-card, .advantage-card, .contact-method');
     

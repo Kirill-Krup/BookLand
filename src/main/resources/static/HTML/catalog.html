@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книжный магазин - Каталог</title>
+    <link rel="stylesheet" href="../CSS/home.css">
+    <link rel="stylesheet" href="../CSS/catalog.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
+    <script src="../JS/catalog.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo" onclick="window.location.href='home.html'" style="cursor:pointer">
+                    <i class="fas fa-book"></i>
+                    <span>BookStore</span>
+                </div>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li><a href="home.html#home" class="nav-link">Главная</a></li>
+                        <li><a href="#" class="nav-link active">Каталог</a></li>
+                        <li><a href="home.html#newBooks" class="nav-link">Новинки</a></li>
+                        <li><a href="home.html#popularBooks" class="nav-link">Бестселлеры</a></li>
+                        <li><a href="aboutUs.html" class="nav-link">О нас</a></li>
+                        <li><a href="#footer" class="nav-link">Контакты</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="guest-menu" id="guestMenu">
+                        <a href="Authentication/login.html" class="btn btn-outline">Войти</a>
+                        <a href="Authentication/registration.html" class="btn btn-primary">Регистрация</a>
+                    </div>
+                    <div class="user-profile" id="userProfile" style="display:none;">
+                        <div class="cart-icon" id="cartIcon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </div>
+                        <div class="user-info" onclick="window.location.href='profile.html'">
+                            <span class="user-login" id="userLogin"></span>
+                            <span class="user-balance" id="userBalance"></span>
+                        </div>
+                        <div class="user-avatar" onclick="window.location.href='profile.html'">
+                            <img src="https://via.placeholder.com/40x40/4F46E5/FFFFFF?text=U" alt="Аватар" id="userAvatar">
+                        </div>
+                        <button class="btn btn-outline logout-btn" id="logoutBtn">Выйти</button>
+                    </div>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="catalog-hero">
+            <div class="container">
+                <h1 class="section-title">Каталог книг</h1>
+                <div class="catalog-controls">
+                    <div class="search-input-wrapper catalog-search">
+                        <i class="fas fa-search"></i>
+                        <input id="catalogSearch" type="text" placeholder="Поиск по названию, автору, жанру..." class="search-input">
+                    </div>
+                    <div class="filters">
+                        <select id="sortSelect" class="filter-select">
+                            <option value="new">Сначала новые</option>
+                            <option value="priceAsc">Цена: по возрастанию</option>
+                            <option value="priceDesc">Цена: по убыванию</option>
+                            <option value="title">По названию</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="activeChips" class="active-chips" style="display:none;"></div>
+            </div>
+        </section>
+
+        <section class="catalog-section">
+            <div class="container">
+                <div class="catalog-layout">
+                    <aside class="filters-sidebar" id="filtersSidebar">
+                        <div class="filters-card">
+                            <div class="filters-header">
+                                <h3>Фильтры</h3>
+                                <button id="resetFilters" class="btn btn-outline btn-small">Сбросить</button>
+                            </div>
+
+                            <div class="filter-block">
+                                <h4>Цена</h4>
+                                <div class="price-slider">
+                                    <div class="price-track" id="priceTrack"></div>
+                                    <input type="range" id="priceMin" min="0" max="100" value="0" step="1">
+                                    <input type="range" id="priceMax" min="0" max="100" value="100" step="1">
+                                </div>
+                                <div class="price-inputs">
+                                    <div class="price-input"><span>от</span><input type="number" id="priceInputMin" min="0"></div>
+                                    <div class="price-input"><span>до</span><input type="number" id="priceInputMax" min="0"></div>
+                                </div>
+                            </div>
+
+                            <div class="filter-block">
+                                <h4>Жанры</h4>
+                                <div id="genresList" class="chips-list"></div>
+                            </div>
+
+                            <div class="filter-block">
+                                <h4>Рейтинг</h4>
+                                <div class="rating-options">
+                                    <label><input type="radio" name="rating" value="0" checked> Любой</label>
+                                    <label><input type="radio" name="rating" value="3"> 3+ звезды</label>
+                                    <label><input type="radio" name="rating" value="4"> 4+ звезды</label>
+                                    <label><input type="radio" name="rating" value="5"> Только 5</label>
+                                </div>
+                            </div>
+
+                            <div class="filter-block">
+                                <h4>Наличие</h4>
+                                <label class="toggle">
+                                    <input type="checkbox" id="inStockToggle">
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">Только в наличии</span>
+                                </label>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <section class="catalog-content">
+                        <div id="booksGrid" class="books-grid"></div>
+                        <div id="catalogEmpty" class="catalog-empty" style="display:none;">
+                            <i class="fas fa-book-open"></i>
+                            <p>Ничего не найдено. Измените фильтры или запрос.</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-book"></i>
+                        <span>BookStore</span>
+                    </div>
+                    <p>Ваш надёжный партнёр в мире литературы.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Каталог</h3>
+                    <ul>
+                        <li><a href="#">Художественная</a></li>
+                        <li><a href="#">Научная</a></li>
+                        <li><a href="#">Детская</a></li>
+                        <li><a href="#">Учебники</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Поддержка</h3>
+                    <ul>
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Доставка</a></li>
+                        <li><a href="#">Возврат</a></li>
+                        <li><a href="#">Контакты</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-phone"></i> +375 (44) 579-75-15</p>
+                        <p><i class="fas fa-envelope"></i> info@bookstore.ru</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Минск, ул. Книжная, 1</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 BookStore. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

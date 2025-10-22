@@ -29,4 +29,16 @@ public class UserServiceImpl implements UserService {
     return userMapper.toDto(user);
   }
 
+  @Override
+  public UserAllProfileDTO updateUser(String login, UserProfileDTO userProfileDTO) {
+    User user = userRepository.findUserByLogin(login);
+    user.setFirstName(userProfileDTO.getFirstName());
+    user.setLastName(userProfileDTO.getLastName());
+    user.setEmail(userProfileDTO.getEmail());
+    user.setPhone(userProfileDTO.getPhone());
+    user.setDeliveryAddress(userProfileDTO.getDeliveryAddress());
+    userRepository.save(user);
+    return userMapper.toDto(user);
+  }
+
 }

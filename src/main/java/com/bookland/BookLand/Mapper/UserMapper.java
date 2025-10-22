@@ -1,5 +1,6 @@
 package com.bookland.BookLand.Mapper;
 
+import com.bookland.BookLand.DTO.UserDTOs.UpdateUserDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserActivityDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserAllProfileDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserLoginDTO;
@@ -27,4 +28,6 @@ public interface UserMapper {
   User toEntity(UserAllProfileDTO dto);
 
   List<UserActivityDTO> toActivityDTOList(List<UserActivity> list);
+
+  User toUpdateUserEntity(UpdateUserDTO dto);
 }
