@@ -2,6 +2,7 @@ package com.bookland.BookLand.Configuration;
 
 import com.bookland.BookLand.Service.impl.CustomUserDetailsService;
 import com.bookland.BookLand.Utils.JwtAuthenticationFilter;
+import jakarta.servlet.http.Cookie;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,6 +45,20 @@ public class SecurityConfig {
         )
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessHandler((request, response, authentication) -> {
+              Cookie jwtCookie = new Cookie("jwt", "");
+              jwtCookie.setHttpOnly(true);
+              jwtCookie.setSecure(false);
+              jwtCookie.setPath("/");
+              jwtCookie.setMaxAge(0);
+              response.addCookie(jwtCookie);
+              response.setStatus(200);
+              response.getWriter().write("{\"message\": \"Logged out successfully\"}");
+            })
+            .permitAll()
         );
 
     http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

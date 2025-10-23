@@ -7,5 +7,6 @@ import lombok.Data;
 public class AuthorCreateDTO {
   @NotBlank(message = "Имя автора не может быть пустым")
   private String name;
+  @NotBlank(message = "Биография автора не может быть пустым")
   private String biography;
 }

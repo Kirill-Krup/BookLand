@@ -13,4 +13,8 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
   List<Book> findFirst3ByOrderByCreatedAtDesc();
 
   Optional<Book> findById(Long bookId);
+
+  void deleteBookById(Long id);
+
+  Book findBookById(Long id);
 }

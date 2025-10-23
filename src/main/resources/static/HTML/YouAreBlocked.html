@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../CSS/YouAreBlocked.css">
+  <script src="../JS/YouAreBlocked.js" defer></script>
+  <title>Title</title>
+</head>
+<body>
+<div class="blocked-container">
+  <div class="decoration decoration-1"></div>
+  <div class="decoration decoration-2"></div>
+
+  <div class="lock-icon floating">
+    <i class="fas fa-lock"></i>
+  </div>
+
+  <h1>Доступ заблокирован</h1>
+
+  <div class="message">
+    <p>К сожалению, ваш аккаунт был временно заблокирован.</p>
+    <p>Это могло произойти по следующим причинам:</p>
+  </div>
+
+  <div class="contact-info">
+    <p>Если вы считаете, что это ошибка, пожалуйста, свяжитесь с нашей службой поддержки:</p>
+    <a href="mailto:BookLandSupport@gmail.com" class="email-link pulse">
+      <i class="fas fa-envelope"></i>
+      BookLandSupport@gmail.com
+    </a>
+    <p class="support-text">Мы ответим вам в течение 24 часов</p>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="location.reload()">
+      <i class="fas fa-redo"></i>
+      Проверить снова
+    </button>
+    <button class="btn btn-secondary" onclick="window.location.href='/'">
+      <i class="fas fa-home"></i>
+      На главную
+    </button>
+  </div>
+</div>
+</body>
+</html>

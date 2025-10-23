@@ -17,12 +17,12 @@ public class BookCreateDTO {
   @NotNull(message = "Цена обязательна")
   private Double price;
 
-  @Min(value = 0, message = "Количество не может быть отрицательным")
-  private Integer quantityInStock = 0;
-
   private LocalDate publicationDate;
+
   private Integer pages;
+
   private String coverImageUrl;
+
   private String publisherName;
 
   @NotNull(message = "Автор обязателен")

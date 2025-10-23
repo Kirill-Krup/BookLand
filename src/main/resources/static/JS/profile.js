@@ -439,3 +439,22 @@ function setupEventListeners() {
     });
   });
 }
+
+
+document.getElementById('logoutBtn').addEventListener('click', function() {
+  if (confirm('Вы уверены, что хотите выйти из панели администратора?')) {
+    fetch('/logout', {
+      method: 'POST',
+      credentials: 'include'
+    })
+    .then(response => {
+      localStorage.clear();
+      window.location.href = '/';
+    })
+    .catch(error => {
+      console.error('Ошибка при выходе:', error);
+      localStorage.clear();
+      window.location.href = '/';
+    });
+  }
+});

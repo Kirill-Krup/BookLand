@@ -15,4 +15,6 @@ public class UserProfileDTO {
   private Double wallet;
   private String deliveryAddress;
   private String phone;
+  private boolean isBlocked;
+  private String role;
 }

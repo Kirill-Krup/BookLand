@@ -66,33 +66,13 @@ function createScrollProgress() {
     window.addEventListener('scroll', updateProgress);
 }
 
-function animateOnScroll() {
-    const elements = document.querySelectorAll('.book-card, .category-card, .section-title, .review-card, .advantage-card, .contact-method');
-    
-    elements.forEach(element => {
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-        
-        if (elementTop < window.innerHeight - elementVisible) {
-            if (element.classList.contains('book-card') || element.classList.contains('category-card') || 
-                element.classList.contains('review-card') || element.classList.contains('advantage-card')) {
-                element.classList.add('card-scroll-animate');
-            } else if (element.classList.contains('section-title')) {
-                element.classList.add('title-scroll-animate');
-            } else {
-                element.classList.add('fade-in-scale');
-            }
-        }
-    });
-}
-
 
 async function toggleUserMenu(){
     try{
         const response = await fetch("/profile/getProfile",{
-        method: "GET",
-        credentials: "include"
-    });
+            method: "GET",
+            credentials: "include"
+        });
 
         if(!response.ok){
             throw new Error("Не удалось получить информацию о профиле")
@@ -105,26 +85,13 @@ async function toggleUserMenu(){
 
         document.getElementById('guestMenu').style.display = "none";
         document.getElementById('userProfile').style.display = "flex";
-
-    }catch(err){
-        console.error(err);
-        document.getElementById('guestMenu').style.display = "flex";
-        document.getElementById('userProfile').style.display = "none";
-    }
-}
-
-async function getNewBooks(){
-    try{
-        const response = await fetch("/books/threeNewBooks",{
-            method: "GET",
-            credentials: "include"
-        });
-
-        if(!response.ok){
-            throw new Error("Не удалось получить информацию о профиле")
+        console.log(profile.role)
+        if (profile.role === 'ADMIN' || profile.role === 'ROLE_ADMIN') {
+            setTimeout(() => {
+                window.location.href = 'admin.html';
+            }, 1000);
+            return;
         }
-        const books = await response.json();
-
 
     }catch(err){
         console.error(err);
@@ -182,9 +149,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Обработчик кнопки выхода
     document.getElementById('logoutBtn').addEventListener('click', function() {
-        isLoggedIn = false;
+        logout();
         toggleUserMenu();
     });
 
@@ -450,4 +416,21 @@ document.addEventListener('DOMContentLoaded', function() {
 function addToCart(bookId) {
     console.log('Добавление в корзину книги с ID:', bookId);
 
+}
+
+
+async function logout() {
+    fetch('/logout', {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(response => {
+        localStorage.clear();
+        window.location.href = '/';
+    })
+    .catch(error => {
+        console.error('Ошибка при выходе:', error);
+        localStorage.clear();
+        window.location.href = '/';
+    });
 }

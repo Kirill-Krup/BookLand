@@ -6,6 +6,8 @@ import com.bookland.BookLand.Mapper.UserMapper;
 import com.bookland.BookLand.Model.User;
 import com.bookland.BookLand.Repository.UserRepository;
 import com.bookland.BookLand.Service.UserService;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,5 +42,31 @@ public class UserServiceImpl implements UserService {
     userRepository.save(user);
     return userMapper.toDto(user);
   }
+
+  @Override
+  public List<UserProfileDTO> getAllUsers() {
+    List<User> allUsers = userRepository.findAll();
+    return userMapper.toProfileDtoList(allUsers);
+  }
+
+  @Override
+  public UserProfileDTO blockUserById(Long id) {
+    User user = userRepository.findUserById(id);
+    user.setBlocked(true);
+    return userMapper.toProfileDto(userRepository.save(user));
+  }
+
+  @Override
+  public UserProfileDTO unBlockUserById(Long id) {
+    User user = userRepository.findUserById(id);
+    user.setBlocked(false);
+    return userMapper.toProfileDto(userRepository.save(user));
+  }
+
+  @Override
+  public void deleteUserById(Long id) {
+    userRepository.deleteById(id);
+  }
+
 
 }

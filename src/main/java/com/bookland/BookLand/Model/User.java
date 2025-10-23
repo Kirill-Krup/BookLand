@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
+@RequiredArgsConstructor
 public class User {
 
   @Id
@@ -43,6 +46,12 @@ public class User {
   @Column(name = "phone")
   private String phone;
 
+  @Column(name = "is_blocked")
+  private boolean isBlocked;
+
+  @Column(name = "role")
+  private String role = "USER";
+
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
@@ -72,4 +81,5 @@ public class User {
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
   private List<Wishlist> wishlistItems;
+
 }

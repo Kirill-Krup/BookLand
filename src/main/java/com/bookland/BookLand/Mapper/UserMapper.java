@@ -8,9 +8,9 @@ import com.bookland.BookLand.DTO.UserDTOs.UserProfileDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserRegistrationDTO;
 import com.bookland.BookLand.Model.User;
 import com.bookland.BookLand.Model.UserActivity;
-import org.mapstruct.*;
-
 import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -20,7 +20,7 @@ public interface UserMapper {
 
   UserRegistrationDTO toRegistrationDto(User user);
   User toEntity(UserRegistrationDTO dto);
-
+  
   UserProfileDTO toProfileDto(User user);
   User toEntity(UserProfileDTO dto);
 
@@ -30,4 +30,6 @@ public interface UserMapper {
   List<UserActivityDTO> toActivityDTOList(List<UserActivity> list);
 
   User toUpdateUserEntity(UpdateUserDTO dto);
+
+  List<UserProfileDTO> toProfileDtoList(List<User> allUsers);
 }
