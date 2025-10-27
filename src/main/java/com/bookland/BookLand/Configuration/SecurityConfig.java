@@ -38,7 +38,9 @@ public class SecurityConfig {
                 "/Images/**",
                 "/home",
                 "/HTML/**",
-                "/"
+                "/",
+                "/books/threeNewBooks",
+                "books/getAllBooks"
             )
             .permitAll()
             .anyRequest().authenticated()

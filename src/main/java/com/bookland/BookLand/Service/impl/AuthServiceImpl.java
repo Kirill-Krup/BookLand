@@ -53,6 +53,7 @@ public class AuthServiceImpl implements AuthService {
     user.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
     user.setFirstName(registrationDTO.getFirstName());
     user.setLastName(registrationDTO.getLastName());
+    user.setPhone(registrationDTO.getPhone());
     user.setDeliveryAddress(registrationDTO.getDeliveryAddress());
     user.setRegistrationDate(LocalDateTime.now());
     user.setWallet(0.0);

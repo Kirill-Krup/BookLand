@@ -85,8 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
       const user = await response.json();
       console.log("Вошёл как:", user);
-
-      window.location.href = "/HTML/home.html";
+      if(user.isBlocked){
+        window.location.href = "/HTML/YouAreBlocked.html";
+      }else{
+        window.location.href = "/HTML/home.html";
+      }
     } catch (e) {
       console.error(e);
     }

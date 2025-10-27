@@ -45,7 +45,7 @@ public class Order {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "payment_method")
-  private PaymentMethod paymentMethod;
+  private PaymentMethod paymentMethod = PaymentMethod.PURSE;
 
   @Column(name = "tracking_number")
   private String trackingNumber;

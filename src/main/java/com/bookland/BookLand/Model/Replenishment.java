@@ -31,7 +31,7 @@ public class Replenishment {
 
   @CreationTimestamp
   @Column(name = "replenishment_date", updatable = false)
-  private LocalDateTime replenishmentDate;
+  private LocalDateTime replenishmentDate = LocalDateTime.now();
 
   @Enumerated(EnumType.STRING)
   @Column(name = "payment_method")

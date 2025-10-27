@@ -1,5 +1,6 @@
 package com.bookland.BookLand.Service.impl;
 
+import com.bookland.BookLand.DTO.UserDTOs.UpdateUserDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserAllProfileDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserProfileDTO;
 import com.bookland.BookLand.Mapper.UserMapper;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserAllProfileDTO updateUser(String login, UserProfileDTO userProfileDTO) {
+  public UserAllProfileDTO updateUser(String login, UpdateUserDTO userProfileDTO) {
     User user = userRepository.findUserByLogin(login);
     user.setFirstName(userProfileDTO.getFirstName());
     user.setLastName(userProfileDTO.getLastName());

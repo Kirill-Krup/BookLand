@@ -10,439 +10,262 @@
     <script src = "../JS/profile.js"  defer ></script>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <i class="fas fa-book"></i>
-                    <span>BookStore</span>
-                </div>
-                <ul class="nav-menu">
-                    <li><a href="home.html" class="nav-link">Главная</a></li>
-                    <li><a href="#catalog" class="nav-link">Каталог</a></li>
-                    <li><a href="#new" class="nav-link">Новинки</a></li>
-                    <li><a href="aboutUs.html" class="nav-link">О нас</a></li>
-                    <li><a href="#contact" class="nav-link">Контакты</a></li>
-                </ul>
-                <div class="nav-actions">
-                    <!-- User profile (shown when logged in) -->
-                    <div class="user-profile">
-                        <button class="cart-btn">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </button>
-                        <div class="user-info">
-                            <img class="user-avatar" alt="Avatar" id="userAvatar">
-                            <div class="user-details">
-                                <div class="user-name" id="userName"></div>
-                                <div class="user-balance" id="userBalance"></div>
-                            </div>
-                            <button class="logout-btn" id="logoutBtn" title="Выйти">
-                                <i class="fas fa-sign-out-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <button class="menu-toggle">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                </div>
+<!-- Header -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-book"></i>
+                <span>BookStore</span>
             </div>
-        </nav>
-    </header>
-
-    <!-- Profile Container -->
-    <div class="profile-container">
-        <div class="profile-sidebar">
-            <div class="profile-header">
-                <img class="profile-avatar" id="profileAvatar" alt="Avatar" >
-                <h2 class="profile-name" id="profileName"></h2>
-                <p class="profile-email" id="profileEmail"></p>
-                <div class="profile-balance">
-                    <span class="balance-label">Баланс:</span>
-                    <span class="balance-amount" id="balanceAmount"></span>
-                    <button class="topup-btn" id="topupBtn">
-                        <i class="fas fa-plus"></i>
-                        Пополнить
-                    </button>
-                </div>
-            </div>
-
-            <nav class="profile-nav">
-                <ul class="nav-list">
-                    <li class="nav-item active" data-section="overview">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>Обзор</span>
-                    </li>
-                    <li class="nav-item" data-section="orders">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span>Заказы</span>
-                    </li>
-                    <li class="nav-item" data-section="history">
-                        <i class="fas fa-history"></i>
-                        <span>История покупок</span>
-                    </li>
-                    <li class="nav-item" data-section="cart">
+            <ul class="nav-menu">
+                <li><a href="home.html" class="nav-link">Главная</a></li>
+                <li><a href="#catalog" class="nav-link">Каталог</a></li>
+                <li><a href="#new" class="nav-link">Новинки</a></li>
+                <li><a href="aboutUs.html" class="nav-link">О нас</a></li>
+                <li><a href="#contact" class="nav-link">Контакты</a></li>
+            </ul>
+            <div class="nav-actions" id="userProfile">
+                <div class="user-profile">
+                    <button class="cart-btn" id="headerCartBtn">
                         <i class="fas fa-shopping-cart"></i>
-                        <span>Корзина</span>
-                    </li>
-                    <li class="nav-item" data-section="settings">
-                        <i class="fas fa-cog"></i>
-                        <span>Настройки</span>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-        <div class="profile-content">
-            <!-- Overview Section -->
-            <section class="profile-section active" id="overview">
-                <div class="section-header">
-                    <h2 class="section-title">Обзор аккаунта</h2>
-                    <p class="section-subtitle">Добро пожаловать в ваш профиль BookStore</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-shopping-bag"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 class="stat-number" id="stat-number-orders"></h3>
-                            <p class="stat-label">Всего заказов</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 class="stat-number">4.8</h3>
-                            <p class="stat-label">Средний рейтинг</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 class="stat-number" id="stat-number-days"></h3>
-                            <p class="stat-label">Дней с нами</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recent-activity">
-                    <h3 class="activity-title">Последняя активность</h3>
-                    <div class="activity-list" id = "activity-list">
-
-                    </div>
-                </div>
-            </section>
-
-            <!-- Orders Section -->
-            <section class="profile-section" id="orders">
-                <div class="section-header">
-                    <h2 class="section-title">Активные заказы</h2>
-                    <p class="section-subtitle">Отслеживайте статус ваших заказов</p>
-                </div>
-
-                <div class="orders-list">
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-info">
-                                <h3 class="order-number">Заказ #12345</h3>
-                                <span class="order-date">15 января 2025</span>
-                            </div>
-                            <div class="order-status status-processing">
-                                <i class="fas fa-clock"></i>
-                                Обрабатывается
-                            </div>
-                        </div>
-                        <div class="order-items">
-                            <div class="order-item">
-                                <div class="item-image">
-                                    <i class="fas fa-book"></i>
-                                </div>
-                                <div class="item-info">
-                                    <h4 class="item-name">1984</h4>
-                                    <p class="item-description">Джордж Оруэлл - Антиутопический роман</p>
-                                </div>
-                                <div class="item-price">450 ₽</div>
-                            </div>
-                        </div>
-                        <div class="order-footer">
-                            <div class="order-total">
-                                <span class="total-label">Итого:</span>
-                                <span class="total-amount">450 ₽</span>
-                            </div>
-                            <div class="order-actions">
-                                <button class="btn btn-secondary">Отменить</button>
-                                <button class="btn btn-primary">Подробнее</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-info">
-                                <h3 class="order-number">Заказ #12344</h3>
-                                <span class="order-date">12 января 2025</span>
-                            </div>
-                            <div class="order-status status-shipped">
-                                <i class="fas fa-truck"></i>
-                                Отправлен
-                            </div>
-                        </div>
-                        <div class="order-items">
-                            <div class="order-item">
-                                <div class="item-image">
-                                    <i class="fas fa-book"></i>
-                                </div>
-                                <div class="item-info">
-                                    <h4 class="item-name">Мастер и Маргарита</h4>
-                                    <p class="item-description">Михаил Булгаков - Философский роман</p>
-                                </div>
-                                <div class="item-price">520 ₽</div>
-                            </div>
-                        </div>
-                        <div class="order-footer">
-                            <div class="order-total">
-                                <span class="total-label">Итого:</span>
-                                <span class="total-amount">520 ₽</span>
-                            </div>
-                            <div class="order-actions">
-                                <button class="btn btn-primary">Отследить</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- History Section -->
-            <section class="profile-section" id="history">
-                <div class="section-header">
-                    <h2 class="section-title">История покупок</h2>
-                    <p class="section-subtitle">Все ваши покупки за все время</p>
-                </div>
-
-                <div class="history-filters">
-                    <button class="filter-btn active" data-filter="all">Все</button>
-                    <button class="filter-btn" data-filter="fiction">Художественная</button>
-                    <button class="filter-btn" data-filter="nonfiction">Научная</button>
-                    <button class="filter-btn" data-filter="children">Детские</button>
-                </div>
-
-                <div class="history-list">
-                    <div class="history-item" data-category="fiction">
-                        <div class="history-image">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="history-info">
-                            <h4 class="history-name">Война и мир</h4>
-                            <p class="history-description">Лев Толстой - Эпический роман</p>
-                            <span class="history-date">10 января 2025</span>
-                        </div>
-                        <div class="history-price">1,200 ₽</div>
-                        <div class="history-status status-delivered">
-                            <i class="fas fa-check-circle"></i>
-                            Доставлено
-                        </div>
-                    </div>
-
-                    <div class="history-item" data-category="fiction">
-                        <div class="history-image">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="history-info">
-                            <h4 class="history-name">Преступление и наказание</h4>
-                            <p class="history-description">Фёдор Достоевский - Психологический роман</p>
-                            <span class="history-date">5 января 2025</span>
-                        </div>
-                        <div class="history-price">380 ₽</div>
-                        <div class="history-status status-delivered">
-                            <i class="fas fa-check-circle"></i>
-                            Доставлено
-                        </div>
-                    </div>
-
-                    <div class="history-item" data-category="nonfiction">
-                        <div class="history-image">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="history-info">
-                            <h4 class="history-name">Краткая история времени</h4>
-                            <p class="history-description">Стивен Хокинг - Научно-популярная книга</p>
-                            <span class="history-date">28 декабря 2024</span>
-                        </div>
-                        <div class="history-price">650 ₽</div>
-                        <div class="history-status status-delivered">
-                            <i class="fas fa-check-circle"></i>
-                            Доставлено
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Cart Section -->
-            <section class="profile-section" id="cart">
-                <div class="section-header">
-                    <h2 class="section-title">Корзина</h2>
-                    <p class="section-subtitle">Книги, которые вы планируете купить</p>
-                </div>
-
-                <div class="cart-list">
-                    <div class="cart-item">
-                        <div class="cart-image">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="cart-info">
-                            <h4 class="cart-name">1984</h4>
-                            <p class="cart-description">Джордж Оруэлл - Антиутопический роман</p>
-                            <div class="cart-quantity">
-                                <button class="quantity-btn" data-action="decrease">-</button>
-                                <span class="quantity-value">1</span>
-                                <button class="quantity-btn" data-action="increase">+</button>
-                            </div>
-                        </div>
-                        <div class="cart-price">450 ₽</div>
-                        <button class="remove-btn" title="Удалить">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-
-                    <div class="cart-item">
-                        <div class="cart-image">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="cart-info">
-                            <h4 class="cart-name">Гарри Поттер и философский камень</h4>
-                            <p class="cart-description">Дж. К. Роулинг - Фэнтези для детей</p>
-                            <div class="cart-quantity">
-                                <button class="quantity-btn" data-action="decrease">-</button>
-                                <span class="quantity-value">1</span>
-                                <button class="quantity-btn" data-action="increase">+</button>
-                            </div>
-                        </div>
-                        <div class="cart-price">580 ₽</div>
-                        <button class="remove-btn" title="Удалить">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="cart-summary">
-                    <div class="summary-row">
-                        <span class="summary-label">Книги:</span>
-                        <span class="summary-value">1,030 ₽</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Доставка:</span>
-                        <span class="summary-value">Бесплатно</span>
-                    </div>
-                    <div class="summary-row total">
-                        <span class="summary-label">Итого:</span>
-                        <span class="summary-value">1,030 ₽</span>
-                    </div>
-                    <button class="checkout-btn">
-                        <i class="fas fa-credit-card"></i>
-                        Оформить заказ
+                        <span class="cart-count">0</span>
                     </button>
-                </div>
-            </section>
-
-            <!-- Settings Section -->
-            <section class="profile-section" id="settings">
-                <div class="section-header">
-                    <h2 class="section-title">Настройки профиля</h2>
-                    <p class="section-subtitle">Управляйте настройками вашего аккаунта</p>
-                </div>
-
-                <div class="settings-form">
-                    <div class="form-group">
-                        <label for="firstName" class="form-label">Имя</label>
-                        <input type="text" id="firstName" class="form-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lastName" class="form-label">Фамилия</label>
-                        <input type="text" id="lastName" class="form-input" >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" class="form-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone" class="form-label">Телефон</label>
-                        <input type="text" id="phone" class="form-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="address" class="form-label">Адрес доставки</label>
-                        <input type="text" id="address" class="form-input">
-                    </div>
-
-                    <div class="form-actions">
-                        <button class="btn btn-primary">Сохранить изменения</button>
-                        <button class="btn btn-secondary">Отмена</button>
+                    <div class="user-info">
+                        <img class="user-avatar" alt="Avatar" id="userAvatar">
+                        <div class="user-details">
+                            <div class="user-name" id="userName"></div>
+                            <div class="user-balance" id="userBalance"></div>
+                        </div>
+                        <button class="logout-btn" id="logoutBtn" title="Выйти">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
                     </div>
                 </div>
-            </section>
-        </div>
-    </div>
 
-    <!-- Top-up Modal -->
-    <div class="modal" id="topupModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Пополнение баланса</h3>
-                <button class="modal-close" id="modalClose">
-                    <i class="fas fa-times"></i>
+                <button class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="topup-amounts">
-                    <button class="amount-btn" data-amount="500">500 ₽</button>
-                    <button class="amount-btn" data-amount="1000">1,000 ₽</button>
-                    <button class="amount-btn" data-amount="2000">2,000 ₽</button>
-                    <button class="amount-btn" data-amount="5000">5,000 ₽</button>
+        </div>
+    </nav>
+</header>
+
+<!-- Profile Container -->
+<div class="profile-container">
+    <div class="profile-sidebar">
+        <div class="profile-header">
+            <img class="profile-avatar" id="profileAvatar" alt="Avatar" >
+            <h2 class="profile-name" id="profileName"></h2>
+            <p class="profile-email" id="profileEmail"></p>
+            <div class="profile-balance">
+                <span class="balance-label">Баланс:</span>
+                <span class="balance-amount" id="balanceAmount"></span>
+                <button class="topup-btn" id="topupBtn">
+                    <i class="fas fa-plus"></i>
+                    Пополнить
+                </button>
+            </div>
+        </div>
+
+        <nav class="profile-nav">
+            <ul class="nav-list">
+                <li class="nav-item active" data-section="overview">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Обзор</span>
+                </li>
+                <li class="nav-item" data-section="orders">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Заказы</span>
+                </li>
+                <li class="nav-item" data-section="history">
+                    <i class="fas fa-history"></i>
+                    <span>История покупок</span>
+                </li>
+                <li class="nav-item" data-section="cart" id="navCartItem">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Корзина</span>
+                </li>
+                <li class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="profile-content">
+        <!-- Overview Section -->
+        <section class="profile-section active" id="overview">
+            <div class="section-header">
+                <h2 class="section-title">Обзор аккаунта</h2>
+                <p class="section-subtitle">Добро пожаловать в ваш профиль BookStore</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-number" id="stat-number-orders"></h3>
+                        <p class="stat-label">Всего заказов</p>
+                    </div>
                 </div>
-                <div class="custom-amount">
-                    <label for="customAmount" class="form-label">Или введите сумму:</label>
-                    <input type="number" id="customAmount" class="form-input" placeholder="Введите сумму" min="100" max="50000">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-number">4.8</h3>
+                        <p class="stat-label">Средний рейтинг</p>
+                    </div>
                 </div>
-                <div class="payment-methods">
-                    <h4 class="payment-title">Способ оплаты:</h4>
-                    <div class="payment-options">
-                        <label class="payment-option">
-                            <input type="radio" name="payment" value="card" checked>
-                            <span class="payment-label">
-                                <i class="fas fa-credit-card"></i>
-                                Банковская карта
-                            </span>
-                        </label>
-                        <label class="payment-option">
-                            <input type="radio" name="payment" value="wallet">
-                            <span class="payment-label">
-                                <i class="fas fa-wallet"></i>
-                                Электронный кошелек
-                            </span>
-                        </label>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-number" id="stat-number-days"></h3>
+                        <p class="stat-label">Дней с нами</p>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancelTopup">Отмена</button>
-                <button class="btn btn-primary" id="confirmTopup">Пополнить</button>
+
+            <div class="recent-activity">
+                <h3 class="activity-title">Последняя активность</h3>
+                <div class="activity-list" id="activity-list"></div>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section class="profile-section" id="orders">
+            <div class="section-header">
+                <h2 class="section-title">Активные заказы</h2>
+                <p class="section-subtitle">Отслеживайте статус ваших заказов</p>
+            </div>
+            <div class="orders-list"></div>
+        </section>
+
+        <!-- History Section -->
+        <section class="profile-section" id="history">
+            <div class="section-header">
+                <h2 class="section-title">История покупок</h2>
+                <p class="section-subtitle">Все ваши покупки за все время</p>
+            </div>
+
+            <div class="history-filters">
+                <button class="filter-btn active" data-filter="all">Все</button>
+                <button class="filter-btn" data-filter="fiction">Художественная</button>
+                <button class="filter-btn" data-filter="nonfiction">Научная</button>
+                <button class="filter-btn" data-filter="children">Детские</button>
+            </div>
+
+            <div class="history-list"></div>
+        </section>
+
+        <!-- Cart Section -->
+        <section class="profile-section" id="cart">
+            <div class="section-header">
+                <h2 class="section-title">Корзина</h2>
+                <p class="section-subtitle">Книги, которые вы планируете купить</p>
+            </div>
+
+            <div class="cart-list"></div>
+
+            <div class="cart-summary"></div>
+        </section>
+
+        <!-- Settings Section -->
+        <section class="profile-section" id="settings">
+            <div class="section-header">
+                <h2 class="section-title">Настройки профиля</h2>
+                <p class="section-subtitle">Управляйте настройками вашего аккаунта</p>
+            </div>
+
+            <div class="settings-form">
+                <div class="form-group">
+                    <label for="firstName" class="form-label">Имя</label>
+                    <input type="text" id="firstName" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName" class="form-label">Фамилия</label>
+                    <input type="text" id="lastName" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="form-label">Телефон</label>
+                    <input type="text" id="phone" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">Адрес доставки</label>
+                    <input type="text" id="address" class="form-input">
+                </div>
+
+                <div class="form-actions">
+                    <button id="saveInfo" class="btn btn-primary">Сохранить изменения</button>
+                    <button class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Top-up Modal -->
+<div class="modal" id="topupModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Пополнение баланса</h3>
+            <button class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="topup-amounts">
+                <button class="amount-btn" data-amount="20">20 BYN</button>
+                <button class="amount-btn" data-amount="50">50 BYN</button>
+                <button class="amount-btn" data-amount="100">100 BYN</button>
+                <button class="amount-btn" data-amount="200">200 BYN</button>
+            </div>
+            <div class="custom-amount">
+                <label for="customAmount" class="form-label">Или введите сумму:</label>
+                <input type="number" id="customAmount" class="form-input" placeholder="Введите сумму" min="5" max="50000">
+            </div>
+            <div class="payment-methods">
+                <h4 class="payment-title">Способ оплаты:</h4>
+                <div class="payment-options">
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="card" checked>
+                        <span class="payment-label">
+                            <i class="fas fa-credit-card"></i>
+                            Банковская карта
+                        </span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="wallet">
+                        <span class="payment-label">
+                            <i class="fas fa-wallet"></i>
+                            Электронный кошелек
+                        </span>
+                    </label>
+                </div>
             </div>
         </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelTopup">Отмена</button>
+            <button class="btn btn-primary" id="confirmTopup">Пополнить</button>
+        </div>
     </div>
+</div>
 </body>
 </html>
-

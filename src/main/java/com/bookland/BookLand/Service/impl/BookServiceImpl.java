@@ -9,6 +9,7 @@ import com.bookland.BookLand.Repository.AuthorRepository;
 import com.bookland.BookLand.Repository.BookRepository;
 import com.bookland.BookLand.Repository.GenreRepository;
 import com.bookland.BookLand.Service.BookService;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -36,12 +37,21 @@ public class BookServiceImpl implements BookService {
 
   @Override
   public BookDTO createNewBook(BookCreateDTO bookCreateDTO) {
-    return null;
+    Book book = bookMapper.toEntity(bookCreateDTO);
+    book.setGenre(genreRepository.getGenreById((bookCreateDTO.getGenreId())));
+    book.setAuthor(authorRepository.findAuthorById(bookCreateDTO.getAuthorId()));
+    return bookMapper.toDto(bookRepository.save(book));
   }
 
+  @Transactional
   @Override
   public void deleteBookById(Long id) {
-    bookRepository.deleteBookById(id);
+    if (bookRepository.findById(id).isPresent()) {
+      bookRepository.deleteBookById(id);
+    }
+    else {
+      System.err.println("ERROR: Book not found");
+    }
   }
 
   @Override

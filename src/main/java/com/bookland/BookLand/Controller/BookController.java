@@ -6,6 +6,7 @@ import com.bookland.BookLand.DTO.BookDTOs.BookSimpleDTO;
 import com.bookland.BookLand.Service.BookService;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,19 +40,22 @@ public class BookController {
   }
 
   @PostMapping("/createBook")
+  @PreAuthorize("hasRole = 'ADMIN'")
   public ResponseEntity<BookDTO> createBook(@RequestBody BookCreateDTO bookCreateDTO){
     BookDTO dto = bookService.createNewBook(bookCreateDTO);
     return ResponseEntity.ok().body(dto);
   }
 
   @DeleteMapping("/deleteBook/{id}")
+  @PreAuthorize("hasRole = 'ADMIN'")
   public ResponseEntity<Void> deleteBook(@PathVariable Long id){
     bookService.deleteBookById(id);
     return ResponseEntity.noContent().build();
   }
 
   @PutMapping("/updateBook/{id}")
-  public ResponseEntity<BookDTO> updateBook(Long id,@RequestBody BookCreateDTO bookUpdateDTO){
+  @PreAuthorize("hasRole = 'ADMIN'")
+  public ResponseEntity<BookDTO> updateBook(@PathVariable Long id,@RequestBody BookCreateDTO bookUpdateDTO){
     BookDTO dto = bookService.updateBook(id, bookUpdateDTO);
     return ResponseEntity.ok().body(dto);
   }

@@ -1,5 +1,6 @@
 package com.bookland.BookLand.Controller;
 
+import com.bookland.BookLand.DTO.UserDTOs.UpdateUserDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserAllProfileDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserProfileDTO;
 import com.bookland.BookLand.Service.UserService;
@@ -22,20 +23,18 @@ public class ProfileController {
 
   @GetMapping("/getProfile")
   public ResponseEntity<UserProfileDTO> getProfile(Authentication authentication) {
-    String login = authentication.getName();
-    UserProfileDTO profileDTO = userService.getProfileByLogin(login);
+    UserProfileDTO profileDTO = userService.getProfileByLogin(authentication.getName());
     return ResponseEntity.ok(profileDTO);
   }
 
   @GetMapping("/getAllProfileInfo")
   public ResponseEntity<UserAllProfileDTO> getAllProfile(Authentication authentication) {
-    String login = authentication.getName();
-    UserAllProfileDTO profileDTO = userService.getAllProfileByLogin(login);
+    UserAllProfileDTO profileDTO = userService.getAllProfileByLogin(authentication.getName());
     return ResponseEntity.ok(profileDTO);
   }
 
   @PutMapping("/update")
-  public ResponseEntity<UserAllProfileDTO> updateProfile(Authentication authentication, @RequestBody UserProfileDTO userProfileDTO) {
+  public ResponseEntity<UserAllProfileDTO> updateProfile(Authentication authentication, @RequestBody UpdateUserDTO userProfileDTO) {
       UserAllProfileDTO dto= userService.updateUser(authentication.getName(), userProfileDTO);
       return ResponseEntity.ok(dto);
   }

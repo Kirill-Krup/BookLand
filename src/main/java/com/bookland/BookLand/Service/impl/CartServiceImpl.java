@@ -2,6 +2,7 @@ package com.bookland.BookLand.Service.impl;
 
 import com.bookland.BookLand.DTO.CartDTOs.AddToCartDTO;
 import com.bookland.BookLand.DTO.CartDTOs.CartDTO;
+import com.bookland.BookLand.DTO.CartDTOs.DeleteFromCartDTO;
 import com.bookland.BookLand.Mapper.CartMapper;
 import com.bookland.BookLand.Model.Book;
 import com.bookland.BookLand.Model.Cart;
@@ -31,21 +32,34 @@ public class CartServiceImpl implements CartService {
 
   @Override
   public CartDTO getUserCart(String name) {
-    Optional<Cart> cart = cartRepository.findByLogin(name);
-    return cartMapper.toDto(cart);
+    Long id = userRepository.findUserByLogin(name).getId();
+    Optional<Cart> cartOptional = cartRepository.findByUserId(id);
+
+    return cartOptional.map(cartMapper::toDto)
+        .orElseGet(() -> {
+          CartDTO emptyCart = new CartDTO();
+          emptyCart.setCartItems(new ArrayList<>());
+          emptyCart.setTotalPrice(0.0);
+          return emptyCart;
+        });
   }
 
   @Override
   @Transactional
   public CartDTO addItemToCart(String username, AddToCartDTO addDTO) {
-    Cart cart = cartRepository.findByLogin(username)
-        .orElseGet(() -> createCartForUser(username));
+    User user = userRepository.findByLogin(username)
+        .orElseThrow(() -> new RuntimeException("Пользователь не найден: " + username));
+
+    Cart cart = cartRepository.findByUserId(user.getId())
+        .orElseGet(() -> createCartForUser(user));
+
     Book book = bookRepository.findById(addDTO.getBookId())
         .orElseThrow(() -> new RuntimeException("Книга не найдена с ID: " + addDTO.getBookId()));
 
     Optional<CartItem> existingItem = cart.getCartItems().stream()
         .filter(item -> item.getBook().getId().equals(addDTO.getBookId()))
         .findFirst();
+
     CartItem cartItem;
     if (existingItem.isPresent()) {
       cartItem = existingItem.get();
@@ -58,6 +72,7 @@ public class CartServiceImpl implements CartService {
           .build();
       cart.getCartItems().add(cartItem);
     }
+
     cartItemRepository.save(cartItem);
     cart.setUpdatedAt(LocalDateTime.now());
     cartRepository.save(cart);
@@ -65,11 +80,64 @@ public class CartServiceImpl implements CartService {
     return cartMapper.toDto(cart);
   }
 
-  private Cart createCartForUser(String username) {
+  @Override
+  @Transactional
+  public CartDTO removeItemFromCart(String username, DeleteFromCartDTO deleteDTO) {
     User user = userRepository.findByLogin(username)
         .orElseThrow(() -> new RuntimeException("Пользователь не найден: " + username));
+
+    Cart cart = cartRepository.findByUserId(user.getId())
+        .orElseThrow(() -> new RuntimeException("Корзина не найдена для пользователя: " + username));
+
+    CartItem cartItem = cart.getCartItems().stream()
+        .filter(item -> item.getBook().getId().equals(deleteDTO.getBookId()))
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("Книга не найдена в корзине: " + deleteDTO.getBookId()));
+
+    if (cartItem.getQuantity() > 1) {
+      cartItem.setQuantity(cartItem.getQuantity() - 1);
+      cartItemRepository.save(cartItem);
+    } else {
+      cart.getCartItems().remove(cartItem);
+      cartItemRepository.delete(cartItem);
+    }
+    cart.setUpdatedAt(LocalDateTime.now());
+    cartRepository.save(cart);
+
+    return cartMapper.toDto(cart);
+  }
+
+  @Override
+  @Transactional
+  public void deleteItemFromCart(String username, DeleteFromCartDTO deleteDTO) {
+    User user = userRepository.findByLogin(username)
+        .orElseThrow(() -> new RuntimeException("Пользователь не найден: " + username));
+
+    Cart cart = cartRepository.findByUserId(user.getId())
+        .orElseThrow(() -> new RuntimeException("Корзина не найдена для пользователя: " + username));
+
+    CartItem cartItem = cart.getCartItems().stream()
+        .filter(item -> item.getBook().getId().equals(deleteDTO.getBookId()))
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("Книга не найдена в корзине: " + deleteDTO.getBookId()));
+
+    cart.getCartItems().remove(cartItem);
+    cartItemRepository.delete(cartItem);
+    cart.setUpdatedAt(LocalDateTime.now());
+    cartRepository.save(cart);
+  }
+
+  @Override
+  @Transactional
+  public void deleteCart(Long id) {
+    cartRepository.deleteById(id);
+  }
+
+  private Cart createCartForUser(User user) {
     Cart cart = Cart.builder()
         .user(user)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .cartItems(new ArrayList<>())
         .build();
     return cartRepository.save(cart);

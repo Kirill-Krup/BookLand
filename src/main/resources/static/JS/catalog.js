@@ -75,7 +75,6 @@ function normalizeBooks(books){
             rating: typeof b.rating === 'number' ? b.rating : (parseFloat(b.rating) || 0),
             inStock: inStock,
             coverImageUrl: b.coverImageUrl,
-            // Дополнительные поля для расширения функциональности
             description: b.description || '',
             pages: b.pages || 0,
             publicationDate: b.publicationDate || '',
