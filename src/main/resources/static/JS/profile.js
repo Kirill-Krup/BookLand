@@ -493,7 +493,10 @@ function renderOrderHistory(history) {
 
   const historyHTML = history.map(order => {
     return order.orderItems.map(orderItem => {
-      const hasReview = userReviews.some(review => review.book && review.book.id === orderItem.book.id);
+      // Исправляем проверку отзывов для новой структуры
+      const hasReview = userReviews.some(review =>
+          review.book && review.book.id === orderItem.book.id
+      );
 
       return `
       <div class="history-item" data-category="all">
@@ -622,7 +625,7 @@ function showOrderDetailsModal(order) {
       <h3 style="margin-bottom: 15px; color: #333;">Товары в заказе</h3>
       <div class="items-list">
         ${order.orderItems ? order.orderItems.map(item => {
-    const hasReview = userReviews.some(review => review.bookId === item.book.id);
+    const hasReview = userReviews.some(review => review.book && review.book.id === item.book.id);
     return `
           <div class="order-item-detail" style="display: flex; align-items: center; padding: 15px; background: #f9f9f9; border-radius: 8px; margin-bottom: 10px;">
             <div class="item-image" style="margin-right: 15px;">
@@ -847,6 +850,7 @@ async function loadReviews() {
     }
 
     const reviews = await response.json();
+    console.log("Полученные отзывы:", reviews);
     userReviews = reviews;
     renderReviews(reviews);
 
@@ -953,41 +957,56 @@ async function deleteReview(reviewId) {
 
 function renderReviews(reviews) {
   const reviewsContainer = document.querySelector('.reviews-container');
-  if (!reviewsContainer) return;
+  if (!reviewsContainer) {
+    console.error('Контейнер для отзывов не найден');
+    return;
+  }
+
+  console.log("Рендеринг отзывов:", reviews); // Для отладки
 
   if (!reviews || reviews.length === 0) {
     reviewsContainer.innerHTML = '<p class="no-items">Вы еще не оставляли отзывов</p>';
     return;
   }
 
-  const reviewsHTML = reviews.map(review => `
-    <div class="review-item" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 15px; background: #f9f9f9;">
-      <div class="review-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-        <div class="book-info">
-          <h4 style="margin: 0 0 5px 0; color: #333;">${review.bookTitle || (review.book ? review.book.title : 'Название книги')}</h4>
-          <p style="margin: 0; color: #666; font-size: 14px;">${review.authorName || (review.book ? review.book.authorName : 'Автор неизвестен')}</p>
+  const reviewsHTML = reviews.map(review => {
+    console.log("Обработка отзыва:", review); // Для отладки
+
+    const bookTitle = review.book ? review.book.title : 'Название книги';
+    const authorName = review.book ? review.book.authorName : 'Автор неизвестен';
+    const rating = review.rating || 0;
+    const comment = review.comment || 'Без комментария';
+    const reviewDate = review.reviewDate || new Date();
+    const reviewId = review.id;
+
+    return `
+        <div class="review-item" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 15px; background: #f9f9f9;">
+            <div class="review-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div class="book-info">
+                    <h4 style="margin: 0 0 5px 0; color: #333;">${bookTitle}</h4>
+                    <p style="margin: 0; color: #666; font-size: 14px;">${authorName}</p>
+                </div>
+                <div class="review-rating">
+                    ${renderStars(rating)}
+                </div>
+            </div>
+            <div class="review-comment">
+                <p style="margin: 0; color: #444; line-height: 1.5;">${comment}</p>
+            </div>
+            <div class="review-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
+                <span class="review-date" style="color: #888; font-size: 12px;">
+                    ${formatDate(reviewDate)}
+                </span>
+                <button class="btn-delete-review" onclick="deleteReview(${reviewId})" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                    Удалить
+                </button>
+            </div>
         </div>
-        <div class="review-rating">
-          ${renderStars(review.rating)}
-        </div>
-      </div>
-      <div class="review-comment">
-        <p style="margin: 0; color: #444; line-height: 1.5;">${review.comment || 'Без комментария'}</p>
-      </div>
-      <div class="review-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
-        <span class="review-date" style="color: #888; font-size: 12px;">
-          ${formatDate(review.createdAt || review.reviewDate || new Date())}
-        </span>
-        <button class="btn-delete-review" onclick="deleteReview(${review.id})" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
-          Удалить
-        </button>
-      </div>
-    </div>
-  `).join('');
+        `;
+  }).join('');
 
   reviewsContainer.innerHTML = reviewsHTML;
 }
-
 function renderStars(rating) {
   let starsHTML = '';
   for (let i = 1; i <= 5; i++) {

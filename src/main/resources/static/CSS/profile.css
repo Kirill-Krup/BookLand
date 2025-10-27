@@ -1290,3 +1290,24 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-dark);
 }
+
+.reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.review-item {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.no-items {
+    text-align: center;
+    color: #666;
+    padding: 40px;
+    font-style: italic;
+}
