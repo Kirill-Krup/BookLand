@@ -117,4 +117,18 @@ public class OrderServiceImpl implements OrderService {
     return orderMapper.toDTO(order);
   }
 
+  @Override
+  public List<OrderDTO> getAllOrders() {
+    List<Order> allOrders = orderRepository.findAll();
+    return orderMapper.toDTO(allOrders);
+  }
+
+  @Override
+  public OrderDTO updateOrderStatus(Long id) {
+    Order order = orderRepository.findById(id)
+        .orElseThrow(()->new RuntimeException("Error"));
+    order.setStatus(OrderStatus.DELIVERED);
+    return orderMapper.toDTO(orderRepository.save(order));
+  }
+
 }

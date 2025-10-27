@@ -15,4 +15,8 @@ public interface OrderService {
   List<OrderDTO> getMyHistory(String name);
 
   OrderDTO getOrderDetails(Long id);
+
+  List<OrderDTO> getAllOrders();
+
+  OrderDTO updateOrderStatus(Long id);
 }
