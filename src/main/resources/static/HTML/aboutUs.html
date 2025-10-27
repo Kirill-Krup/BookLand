@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>О нас - BookStore</title>
     <link rel="stylesheet" href="../CSS/aboutUs.css">
+    <script src="../JS/aboutUs.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -18,10 +19,10 @@
                 </div>
                 <ul class="nav-menu">
                     <li><a href="home.html" class="nav-link">Главная</a></li>
-                    <li><a href="#catalog" class="nav-link">Каталог</a></li>
-                    <li><a href="#new" class="nav-link">Новинки</a></li>
-                    <li><a href="aboutUs.html" class="nav-link active">О нас</a></li>
-                    <li><a href="#contact" class="nav-link">Контакты</a></li>
+                    <li><a href="catalog.html" class="nav-link">Каталог</a></li>
+                    <li><a href="home.html#newBooks" class="nav-link">Новинки</a></li>
+                    <li><a href="#" class="nav-link active">О нас</a></li>
+                    <li><a href="home.html#contact" class="nav-link">Контакты</a></li>
                 </ul>
                 <div class="nav-actions">
                     <!-- Динамическое меню пользователя -->
@@ -664,7 +665,7 @@
                     <div class="contact-info">
                         <div class="contact-item">
                             <i class="fas fa-phone"></i>
-                            <span>+7 (800) 123-45-67</span>
+                            <span>+375 (44) 579-75-15</span>
                         </div>
                         <div class="contact-item">
                             <i class="fas fa-envelope"></i>
@@ -672,7 +673,7 @@
                         </div>
                         <div class="contact-item">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>Москва, ул. Книжная, 1</span>
+                            <span>Минск, ул. Книжная, 1</span>
                         </div>
                     </div>
                 </div>
@@ -687,249 +688,5 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        // Carousel functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const carouselTrack = document.getElementById('carouselTrack');
-            const indicators = document.querySelectorAll('.indicator');
-            const carouselItems = document.querySelectorAll('.carousel-item');
-            
-            // Проверяем, что элементы найдены
-            if (!carouselTrack) {
-                console.error('Carousel track not found!');
-                return;
-            }
-            
-            if (indicators.length === 0) {
-                console.error('No indicators found!');
-                return;
-            }
-            
-            console.log('Found', indicators.length, 'indicators and', carouselItems.length, 'carousel items');
-            
-            let currentSlide = 0;
-            const totalSlides = 10; // Количество оригинальных слайдов (без дубликатов)
-            let autoSlideInterval;
-            
-            // Initialize carousel
-            function initCarousel() {
-                console.log('Initializing carousel with', indicators.length, 'indicators');
-                updateIndicators();
-                startAutoSlide();
-            }
-            
-            // Update indicators
-            function updateIndicators() {
-                indicators.forEach((indicator, index) => {
-                    indicator.classList.toggle('active', index === currentSlide);
-                });
-            }
-            
-            // Go to specific slide
-            function goToSlide(slideIndex) {
-                console.log('Going to slide:', slideIndex);
-                currentSlide = slideIndex;
-                const translateX = -currentSlide * 100;
-                carouselTrack.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                carouselTrack.style.transform = `translateX(${translateX}%)`;
-                updateIndicators();
-                console.log('Applied transform:', carouselTrack.style.transform);
-            }
-            
-            // Next slide
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                goToSlide(currentSlide);
-                
-                // Reset to beginning when reaching the end
-                if (currentSlide === 0) {
-                    setTimeout(() => {
-                        carouselTrack.style.transition = 'none';
-                        carouselTrack.style.transform = 'translateX(0%)';
-                        setTimeout(() => {
-                            carouselTrack.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                        }, 50);
-                    }, 800);
-                }
-            }
-            
-            // Start auto slide
-            function startAutoSlide() {
-                autoSlideInterval = setInterval(nextSlide, 3000); // Change slide every 3 seconds
-            }
-            
-            // Stop auto slide
-            function stopAutoSlide() {
-                clearInterval(autoSlideInterval);
-            }
-            
-            // Indicator click handlers
-            indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Indicator clicked:', index);
-                    stopAutoSlide();
-                    goToSlide(index);
-                    // Restart auto slide after a delay
-                    setTimeout(() => {
-                        startAutoSlide();
-                    }, 1000);
-                });
-            });
-            
-            // Pause on hover
-            const carouselContainer = document.querySelector('.carousel-container');
-            carouselContainer.addEventListener('mouseenter', stopAutoSlide);
-            carouselContainer.addEventListener('mouseleave', startAutoSlide);
-            
-            // Initialize carousel
-            initCarousel();
-
-            // Mobile menu toggle
-            const menuToggle = document.querySelector('.menu-toggle');
-            const navMenu = document.querySelector('.nav-menu');
-
-            if (menuToggle && navMenu) {
-                menuToggle.addEventListener('click', function() {
-                    navMenu.classList.toggle('active');
-                    this.classList.toggle('active');
-                });
-            }
-
-            // Close mobile menu when clicking on links
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    navMenu.classList.remove('active');
-                    menuToggle.classList.remove('active');
-                });
-            });
-
-            // User menu toggle
-            let isLoggedIn = false;
-            const guestMenu = document.getElementById('guestMenu');
-            const userProfile = document.getElementById('userProfile');
-
-            function toggleUserMenu() {
-                if (isLoggedIn) {
-                    guestMenu.style.display = 'none';
-                    userProfile.style.display = 'flex';
-                } else {
-                    guestMenu.style.display = 'flex';
-                    userProfile.style.display = 'none';
-                }
-            }
-
-            // Initialize user menu
-            toggleUserMenu();
-
-            // Logout functionality
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function() {
-                    isLoggedIn = false;
-                    toggleUserMenu();
-                });
-            }
-
-            // Login simulation
-            const loginLinks = document.querySelectorAll('.guest-menu a');
-            loginLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (this.textContent.includes('Войти')) {
-                        e.preventDefault();
-                        isLoggedIn = true;
-                        toggleUserMenu();
-                    }
-                });
-            });
-
-            // Cart functionality
-            const cartIcon = document.getElementById('cartIcon');
-            if (cartIcon) {
-                cartIcon.addEventListener('click', function() {
-                    window.location.href = 'profile.html';
-                });
-            }
-        });
-
-        // Modal functionality
-        function openModal(button) {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalDate = document.getElementById('modalDate');
-            const modalDescription = document.getElementById('modalDescription');
-
-            const galleryItem = button.closest('.gallery-item');
-            const img = galleryItem.querySelector('img');
-            const title = galleryItem.querySelector('.gallery-title').textContent;
-            const date = galleryItem.querySelector('.gallery-date').textContent;
-            const description = galleryItem.querySelector('.gallery-description').textContent;
-
-            modalImage.src = img.src;
-            modalImage.alt = img.alt;
-            modalTitle.textContent = title;
-            modalDate.textContent = date;
-            modalDescription.textContent = description;
-
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('imageModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Animation on scroll
-        function animateOnScroll() {
-            const elements = document.querySelectorAll('.timeline-item, .value-card, .team-member, .achievement-card');
-            
-            elements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 150;
-                
-                if (elementTop < window.innerHeight - elementVisible) {
-                    element.classList.add('animate-in');
-                }
-            });
-        }
-
-        // Initialize animations
-        window.addEventListener('scroll', animateOnScroll);
-        animateOnScroll();
-    </script>
 </body>
 </html>

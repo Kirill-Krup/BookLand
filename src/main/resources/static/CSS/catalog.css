@@ -34,6 +34,31 @@
     box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
 }
 
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%) scale(0.9);
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 9999;
+    font-size: 14px;
+}
+.toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+.toast.success {
+    background: #10b981;
+}
+.toast.error {
+    background: #ef4444;
+}
+
 .catalog-section {
     padding: 40px 0 80px;
 }

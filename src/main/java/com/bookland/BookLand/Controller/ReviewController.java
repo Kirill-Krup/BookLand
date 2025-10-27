@@ -1,5 +1,6 @@
 package com.bookland.BookLand.Controller;
 
+import com.bookland.BookLand.DTO.ReviewDTOs.ReviewCreateDTO;
 import com.bookland.BookLand.DTO.ReviewDTOs.ReviewDTO;
 import com.bookland.BookLand.Service.ReviewService;
 import java.util.List;
@@ -27,8 +28,14 @@ public class ReviewController {
     return new ResponseEntity<>(reviewDTOList, HttpStatus.OK);
   }
 
+  @GetMapping("/getMyReviews/{id}")
+  public ResponseEntity<List<ReviewDTO>> getMyReviews(@PathVariable Long id) {
+    List<ReviewDTO> list = reviewService.getMyReviewsById(id);
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
   @PostMapping("/createReview")
-  public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewDTO reviewDTO) {
+  public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewCreateDTO reviewDTO) {
     ReviewDTO createdDto = reviewService.createReview(reviewDTO);
     return new ResponseEntity<>(createdDto, HttpStatus.CREATED);
   }

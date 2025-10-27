@@ -51,7 +51,6 @@ public class Book {
   @Column(name = "publisher_name")
   private String publisherName;
 
-  // Relationships
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "author_id", nullable = false)
   @ToString.Exclude

@@ -14,4 +14,6 @@ public interface BookService {
   void deleteBookById(Long id);
 
   BookDTO updateBook(Long id, BookCreateDTO bookUpdateDTO);
+
+  List<BookSimpleDTO> getFivePopularBooks();
 }

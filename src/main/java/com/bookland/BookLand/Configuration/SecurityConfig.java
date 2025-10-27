@@ -40,7 +40,8 @@ public class SecurityConfig {
                 "/HTML/**",
                 "/",
                 "/books/threeNewBooks",
-                "books/getAllBooks"
+                "/books/getAllBooks",
+                "/books/fivePopularBooks"
             )
             .permitAll()
             .anyRequest().authenticated()

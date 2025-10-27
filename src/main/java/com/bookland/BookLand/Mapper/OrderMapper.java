@@ -15,11 +15,7 @@ public interface OrderMapper {
   OrderDTO toDTO(Order order);
   Order toEntity(OrderDTO dto);
 
-  OrderItemDTO toDto(OrderItem item);
-  OrderItem toEntity(OrderItemDTO dto);
-
   Order toEntity(OrderCreateDTO dto);
-  void updateStatusFromDto(OrderStatusUpdateDTO dto, @MappingTarget Order order);
 
   List<OrderDTO> toDTO(List<Order> orders);
 }

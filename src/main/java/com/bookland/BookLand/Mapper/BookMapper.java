@@ -13,6 +13,7 @@ public interface BookMapper {
 
   Book toEntity(BookDTO dto);
 
+  @Mapping(target = "authorName", source = "author.name")
   BookSimpleDTO toSimpleDto(Book book);
 
   Book toEntity(BookCreateDTO dto);

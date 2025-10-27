@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -68,6 +67,14 @@ public class BookServiceImpl implements BookService {
     book.setAuthor(authorRepository.findAuthorById(bookUpdateDTO.getAuthorId()));
     book.setGenre(genreRepository.findGenreById(bookUpdateDTO.getGenreId()));
     return bookMapper.toDto(bookRepository.save(book));
+  }
+
+  @Override
+  public List<BookSimpleDTO> getFivePopularBooks() {
+    List<Book> randomBooks = bookRepository.findRandomBooks();
+    return randomBooks.stream()
+        .map(bookMapper::toSimpleDto)
+        .collect(Collectors.toList());
   }
 
 }

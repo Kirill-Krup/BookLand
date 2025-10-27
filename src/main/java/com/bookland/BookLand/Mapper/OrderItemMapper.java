@@ -6,7 +6,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {BookMapper.class})
 public interface OrderItemMapper {
   @Mapping(target = "order", ignore = true)
   OrderItem toEntity(OrderItemDTO orderItemDTO);

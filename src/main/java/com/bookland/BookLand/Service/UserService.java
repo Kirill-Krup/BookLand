@@ -1,5 +1,6 @@
 package com.bookland.BookLand.Service;
 
+import com.bookland.BookLand.DTO.UserDTOs.CreateUserActivity;
 import com.bookland.BookLand.DTO.UserDTOs.UpdateUserDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserAllProfileDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserProfileDTO;
@@ -18,4 +19,6 @@ public interface UserService {
   UserProfileDTO unBlockUserById(Long id);
 
   void deleteUserById(Long id);
+
+  UserProfileDTO createNewActivity(CreateUserActivity createUserActivity);
 }

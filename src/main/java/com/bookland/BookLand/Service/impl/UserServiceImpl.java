@@ -1,13 +1,15 @@
 package com.bookland.BookLand.Service.impl;
 
+import com.bookland.BookLand.DTO.UserDTOs.CreateUserActivity;
 import com.bookland.BookLand.DTO.UserDTOs.UpdateUserDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserAllProfileDTO;
 import com.bookland.BookLand.DTO.UserDTOs.UserProfileDTO;
 import com.bookland.BookLand.Mapper.UserMapper;
 import com.bookland.BookLand.Model.User;
+import com.bookland.BookLand.Model.UserActivity;
+import com.bookland.BookLand.Repository.UserActivityRepository;
 import com.bookland.BookLand.Repository.UserRepository;
 import com.bookland.BookLand.Service.UserService;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
   private UserMapper userMapper;
   private UserRepository userRepository;
+  private UserActivityRepository userActivityRepository;
 
   public UserServiceImpl(UserMapper userMapper, UserRepository userRepository) {
     this.userMapper = userMapper;
@@ -67,6 +70,17 @@ public class UserServiceImpl implements UserService {
   @Override
   public void deleteUserById(Long id) {
     userRepository.deleteById(id);
+  }
+
+  @Override
+  public UserProfileDTO createNewActivity(CreateUserActivity createUserActivity) {
+    UserActivity userActivity = new UserActivity();
+    User user = userRepository.findUserById(createUserActivity.getUserId());
+    userActivity.setDescription(createUserActivity.getActivityDescription());
+    userActivity.setType(createUserActivity.getActivityType());
+    userActivity.setUser(user);
+    userActivityRepository.save(userActivity);
+    return userMapper.toProfileDto(user);
   }
 
 

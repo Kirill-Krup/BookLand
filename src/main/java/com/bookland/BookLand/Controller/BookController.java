@@ -3,8 +3,10 @@ package com.bookland.BookLand.Controller;
 import com.bookland.BookLand.DTO.BookDTOs.BookCreateDTO;
 import com.bookland.BookLand.DTO.BookDTOs.BookDTO;
 import com.bookland.BookLand.DTO.BookDTOs.BookSimpleDTO;
+import com.bookland.BookLand.Model.Book;
 import com.bookland.BookLand.Service.BookService;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +34,16 @@ public class BookController {
   @GetMapping("/threeNewBooks")
   public List<BookSimpleDTO> getThreeNewBooks(){
     return bookService.getNewBooks();
+  }
+
+  @GetMapping("/fivePopularBooks")
+  public ResponseEntity<List<BookSimpleDTO>> getFivePopularBooks() {
+    try {
+      List<BookSimpleDTO> popularBooks = bookService.getFivePopularBooks();
+      return ResponseEntity.ok(popularBooks);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
 
   @GetMapping("/getAllBooks")

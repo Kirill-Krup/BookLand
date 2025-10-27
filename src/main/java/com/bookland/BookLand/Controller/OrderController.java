@@ -2,7 +2,9 @@ package com.bookland.BookLand.Controller;
 
 import com.bookland.BookLand.DTO.OrderDTOs.OrderCreateDTO;
 import com.bookland.BookLand.DTO.OrderDTOs.OrderDTO;
+import com.bookland.BookLand.Model.Order;
 import com.bookland.BookLand.Service.OrderService;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,12 @@ public class OrderController {
     return new ResponseEntity<>(allActiveOrders, HttpStatus.OK);
   }
 
+  @GetMapping("/getOrderDetails/{id}")
+  public ResponseEntity<OrderDTO> getOrderDetails(@PathVariable Long id) {
+    OrderDTO details = orderService.getOrderDetails(id);
+    return ResponseEntity.ok(details);
+  }
+
   @GetMapping("/getMyOrdersHistory")
   public ResponseEntity<List<OrderDTO>> getMyOrdersHistory(Authentication auth) {
     List<OrderDTO> allHistoryOrders = orderService.getMyHistory(auth.getName());
@@ -42,6 +50,7 @@ public class OrderController {
   }
 
   @DeleteMapping("/deleteOrder/{id}")
+  @Transactional
   public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
     orderService.deleteOrder(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -1,5 +1,3 @@
-// Каталог: загрузка всех книг и отрисовка
-
 async function toggleUserMenu(){
     try{
         const response = await fetch("/profile/getProfile",{
@@ -103,53 +101,6 @@ function renderBooks(books){
     });
 }
 
-function createBookCard(book, index){
-    const card = document.createElement('div');
-    card.className = 'book-card';
-    card.dataset.bookId = book.id;
-
-    const gradients = ['book-gradient-5', 'book-gradient-6', 'book-gradient-7', 'book-gradient-8'];
-    const gradientClass = gradients[index % gradients.length];
-    const price = typeof book.price === 'number' ? (book.price % 1 === 0 ? Math.floor(book.price) : book.price.toFixed(2)) : book.price;
-
-    card.innerHTML = `
-        <div class="book-image">
-            ${book.coverImageUrl ?
-        `<img src="${book.coverImageUrl}" alt="${book.title}" class="book-cover-image" onerror="this.style.display='none'">` :
-        ''
-    }
-            <div class="book-gradient ${gradientClass} ${book.coverImageUrl ? 'hidden' : ''}">
-                <div class="book-spine"></div>
-                <div class="book-pages"></div>
-                <div class="book-title-overlay">${book.title}</div>
-            </div>
-            ${!book.inStock ? '<div class="book-badge out-of-stock">Нет в наличии</div>' : ''}
-            <div class="book-overlay">
-                <button class="btn btn-primary btn-small" onclick="addToCart(${book.id})" ${!book.inStock ? 'disabled' : ''}>
-                    ${book.inStock ? 'В корзину' : 'Нет в наличии'}
-                </button>
-            </div>
-        </div>
-        <div class="book-info">
-            <h3 class="book-title" title="${book.title}">${book.title}</h3>
-            <p class="book-author">${book.authorName || 'Автор неизвестен'}</p>
-            ${book.genre ? `<p class="book-genre">${book.genre}</p>` : ''}
-            <div class="book-rating">
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star"></i>
-                </div>
-                <span class="rating-text">4.5 (10)</span>
-            </div>
-            <div class="book-price">${price} руб.</div>
-        </div>
-    `;
-    return card;
-}
-
 function showCatalogError(){
     const grid = document.getElementById('booksGrid');
     if(grid){
@@ -160,11 +111,6 @@ function showCatalogError(){
             </div>
         `;
     }
-}
-
-function addToCart(bookId){
-    console.log('Добавление в корзину книги с ID:', bookId);
-    // Здесь можно добавить логику добавления в корзину
 }
 
 function applySearchAndSort(){
@@ -553,3 +499,214 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => toggleUserMenu());
     }
 });
+
+document.addEventListener("DOMContentLoaded", async function () {
+    await loadBooks();
+    await getCartCount();
+});
+
+/* ---------------------- ЗАГРУЗКА КНИГ ---------------------- */
+async function loadBooks() {
+    try {
+        const response = await fetch("/api/books", { credentials: "include" });
+        if (!response.ok) throw new Error("Ошибка при загрузке книг");
+        const books = await response.json();
+
+        const booksContainer = document.getElementById("booksContainer");
+        booksContainer.innerHTML = "";
+        books.forEach((book, index) => {
+            const card = createBookCard(book, index);
+            booksContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Ошибка загрузки книг:", error);
+        const booksContainer = document.getElementById("booksContainer");
+        booksContainer.innerHTML = `<p class="error">Не удалось загрузить книги. Попробуйте позже.</p>`;
+    }
+}
+
+/* ---------------------- КАРТОЧКА КНИГИ ---------------------- */
+function createBookCard(book, index) {
+    const card = document.createElement("div");
+    card.className = "book-card";
+    card.dataset.bookId = book.id;
+
+    const gradients = ["book-gradient-5", "book-gradient-6", "book-gradient-7", "book-gradient-8"];
+    const gradientClass = gradients[index % gradients.length];
+
+    const price = typeof book.price === "number"
+        ? (book.price % 1 === 0 ? Math.floor(book.price) : book.price.toFixed(2))
+        : book.price;
+
+    card.innerHTML = `
+        <div class="book-image">
+            ${book.coverImageUrl
+        ? `<img src="${book.coverImageUrl}" alt="${book.title}" class="book-cover-image" onerror="this.style.display='none'">`
+        : ""
+    }
+            <div class="book-gradient ${gradientClass} ${book.coverImageUrl ? "hidden" : ""}">
+                <div class="book-spine"></div>
+                <div class="book-pages"></div>
+                <div class="book-title-overlay">${book.title}</div>
+            </div>
+            ${!book.inStock ? '<div class="book-badge out-of-stock">Нет в наличии</div>' : ""}
+            <div class="book-overlay">
+                <button class="btn btn-primary btn-small" 
+                        onclick="addToCart(${book.id}, event)" 
+                        ${!book.inStock ? "disabled" : ""}>
+                    ${book.inStock ? "В корзину" : "Нет в наличии"}
+                </button>
+            </div>
+        </div>
+        <div class="book-info">
+            <h3 class="book-title" title="${book.title}">${book.title}</h3>
+            <p class="book-author">${book.authorName || "Автор неизвестен"}</p>
+            ${book.genre ? `<p class="book-genre">${book.genre}</p>` : ""}
+            <div class="book-rating">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <span class="rating-text">4.5 (10)</span>
+            </div>
+            <div class="book-price">${price} руб.</div>
+        </div>
+    `;
+    return card;
+}
+
+/* ---------------------- ДОБАВЛЕНИЕ В КОРЗИНУ ---------------------- */
+async function addToCart(bookId, event) {
+    const button = event?.target?.closest("button");
+    const originalText = button ? button.textContent : "В корзину";
+
+    try {
+        if (button) {
+            button.textContent = "Добавляем...";
+            button.disabled = true;
+        }
+
+        const addToCartDTO = { bookId: bookId, quantity: 1 };
+
+        const response = await fetch("/api/cart/addItem", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(addToCartDTO),
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) throw new Error("Необходимо авторизоваться");
+            throw new Error(`Ошибка сервера: ${response.status}`);
+        }
+
+        const cartData = await response.json();
+        updateCartCountFromResponse(cartData);
+        showSuccessMessage("Книга добавлена в корзину!");
+
+        if (button) {
+            button.textContent = "Добавлено!";
+            button.style.background = "#10b981";
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = "";
+                button.disabled = false;
+            }, 2000);
+        }
+    } catch (error) {
+        console.error("Ошибка при добавлении в корзину:", error);
+
+        if (button) {
+            button.textContent = originalText;
+            button.disabled = false;
+        }
+
+        handleAddToCartError(error, bookId);
+        await getCartCount();
+    }
+}
+
+/* ---------------------- КОЛИЧЕСТВО ТОВАРОВ В КОРЗИНЕ ---------------------- */
+async function getCartCount() {
+    try {
+        const response = await fetch("/api/cart/getUserCart", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            throw new Error("Ошибка загрузки корзины");
+        }
+
+        const cart = await response.json();
+        updateCartCount(cart);
+
+    } catch (error) {
+        console.error("Ошибка получения количества товаров в корзине:", error);
+        updateCartCount(0);
+    }
+}
+
+function updateCartCountFromResponse(cartData) {
+    updateCartCount(cartData);
+}
+
+function updateCartCount(cart) {
+    const cartCount = document.getElementById("cartCount");
+    if (!cartCount) return;
+
+    let totalItems = 0;
+
+    if (cart && cart.cartItems) {
+        totalItems = cart.cartItems.reduce((count, item) => count + item.quantity, 0);
+    }
+
+    cartCount.textContent = totalItems;
+    cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+
+    if (totalItems > 0) {
+        cartCount.style.transform = "scale(1.3)";
+        setTimeout(() => {
+            cartCount.style.transform = "scale(1)";
+        }, 300);
+    }
+}
+
+/* ---------------------- УВЕДОМЛЕНИЯ ---------------------- */
+function showSuccessMessage(msg) {
+    const box = document.createElement("div");
+    box.className = "toast success";
+    box.textContent = msg;
+    document.body.appendChild(box);
+    setTimeout(() => box.classList.add("visible"), 10);
+    setTimeout(() => {
+        box.classList.remove("visible");
+        setTimeout(() => box.remove(), 300);
+    }, 2000);
+}
+
+function showErrorMessage(msg) {
+    const box = document.createElement("div");
+    box.className = "toast error";
+    box.textContent = msg;
+    document.body.appendChild(box);
+    setTimeout(() => box.classList.add("visible"), 10);
+    setTimeout(() => {
+        box.classList.remove("visible");
+        setTimeout(() => box.remove(), 300);
+    }, 2500);
+}
+
+/* ---------------------- ОБРАБОТКА ОШИБОК ---------------------- */
+function handleAddToCartError(error) {
+    if (error.message.includes("Необходимо авторизоваться")) {
+        showErrorMessage("Для добавления книги нужно войти в систему");
+    } else if (error.message.includes("404")) {
+        showErrorMessage("Книга не найдена");
+    } else {
+        showErrorMessage("Не удалось добавить книгу в корзину");
+    }
+}

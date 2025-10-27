@@ -4,25 +4,27 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUserCart();
 });
 
-async function toggleUserMenu(){
-  try{
-    const response = await fetch("/profile/getAllProfileInfo",{
+let userReviews = [];
+
+async function toggleUserMenu() {
+  try {
+    const response = await fetch("/profile/getAllProfileInfo", {
       method: "GET",
       credentials: "include"
     });
 
-    if(!response.ok){
+    if (!response.ok) {
       throw new Error("Не удалось получить информацию о профиле")
     }
     const profile = await response.json();
     setInfo(profile);
 
-  }catch(err){
+  } catch (err) {
     console.error(err);
   }
 }
 
-function setInfo(profile){
+function setInfo(profile) {
   document.getElementById('profileAvatar').src = profile.photoPath;
   document.getElementById('profileName').textContent = profile.login;
   document.getElementById('profileEmail').textContent = profile.email;
@@ -61,7 +63,7 @@ async function loadUserCart() {
 
   } catch (err) {
     console.error("Ошибка загрузки корзины:", err);
-    document.querySelector('.cart-list').innerHTML = '<p class="no-items">Не удалось загрузить корзину</p>';
+    document.querySelector('.cart-list').innerHTML = '<p class="no-items">Корзина пуста</p>';
     updateCartCount(0);
   }
 }
@@ -142,7 +144,6 @@ function updateCartSummary(total, cartId) {
       </button>
     `;
 
-    // Добавляем обработчик для кнопки оформления заказа
     const checkoutBtn = document.getElementById('checkoutBtn');
     if (checkoutBtn && !checkoutBtn.disabled) {
       checkoutBtn.addEventListener('click', async function() {
@@ -180,6 +181,7 @@ async function addToCart(bookId) {
       throw new Error(`Ошибка сервера: ${response.status}`);
     }
 
+    await createUserActivity('BOOK_ADDED_TO_CART', `Добавлена книга в корзину`);
     await loadUserCart();
 
   } catch (error) {
@@ -250,7 +252,6 @@ async function deleteCart(cartId) {
       throw new Error(`Ошибка сервера: ${response.status}`);
     }
 
-    console.log("Корзина успешно удалена");
     return true;
 
   } catch (error) {
@@ -261,7 +262,6 @@ async function deleteCart(cartId) {
 
 async function createOrder(cartId) {
   try {
-    // Получаем текущую корзину
     const response = await fetch("/api/cart/getUserCart", {
       method: "GET",
       credentials: "include"
@@ -273,16 +273,13 @@ async function createOrder(cartId) {
 
     const cart = await response.json();
 
-    // Проверяем, что корзина не пуста
     if (!cart || !cart.cartItems || cart.cartItems.length === 0) {
       showNotification("Корзина пуста", "error");
       return;
     }
 
-    // Рассчитываем общую сумму заказа
     const totalAmount = cart.cartItems.reduce((sum, item) => sum + (item.book.price * item.quantity), 0);
 
-    // Получаем информацию о пользователе для проверки баланса
     const profileResponse = await fetch("/profile/getAllProfileInfo", {
       method: "GET",
       credentials: "include"
@@ -294,16 +291,13 @@ async function createOrder(cartId) {
 
     const profile = await profileResponse.json();
 
-    // Проверяем достаточно ли средств на балансе
     if (profile.wallet < totalAmount) {
       showNotification("Недостаточно средств на балансе", "error");
       return;
     }
 
-    // Получаем адрес доставки из профиля
     const shippingAddress = profile.deliveryAddress || '';
 
-    // Создаем список элементов заказа в правильном формате
     const allItems = cart.cartItems.map(item => ({
       book: {
         id: item.book.id,
@@ -311,24 +305,18 @@ async function createOrder(cartId) {
         authorName: item.book.authorName,
         price: item.book.price,
         coverImageUrl: item.book.coverImageUrl
-        // Добавьте другие необходимые поля из BookSimpleDTO
       },
       quantity: item.quantity,
       unitPrice: item.book.price,
       subtotal: item.book.price * item.quantity
     }));
 
-    // Создаем данные для заказа в соответствии с DTO
     const orderData = {
       shippingAddress: shippingAddress,
       totalAmount: totalAmount,
-      paymentMethod: "PURSE", // Используем PURSE как указано в DTO
+      paymentMethod: "PURSE",
       allItems: allItems
-      // orderDate и status устанавливаются автоматически на сервере
-      // trackingNumber будет сгенерирован на сервере
     };
-
-    console.log('Отправляемые данные заказа:', orderData);
 
     const orderResponse = await fetch("/api/orders/newOrder", {
       method: "POST",
@@ -347,10 +335,11 @@ async function createOrder(cartId) {
     const result = await orderResponse.json();
     showNotification("Заказ успешно оформлен!", "success");
 
+    await createUserActivity('BOOK_PURCHASED', `Оформлен заказ на сумму ${totalAmount} BYN`);
+
     if (cartId) {
       try {
         await deleteCart(cartId);
-        console.log("Корзина удалена после оформления заказа");
       } catch (error) {
         console.error("Ошибка при удалении корзины:", error);
       }
@@ -385,6 +374,8 @@ async function updateUserProfile(profileData) {
 
     const updatedProfile = await response.json();
     showNotification("Профиль успешно обновлен", "success");
+
+    await createUserActivity('PROFILE_UPDATED', 'Профиль пользователя обновлен');
     return updatedProfile;
 
   } catch (err) {
@@ -438,120 +429,6 @@ function renderActiveOrders(orders) {
         ${order.orderItems ? order.orderItems.map(item => `
           <div class="order-item">
             <div class="item-image">
-              ${item.bookCover ?
-      `<img src="${item.bookCover}" alt="${item.bookTitle}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">` :
-      `<i class="fas fa-book"></i>`
-  }
-            </div>
-            <div class="item-info">
-              <h4 class="item-name">${item.bookTitle || 'Название книги'}</h4>
-              <p class="item-description">${item.author || 'Автор неизвестен'}</p>
-              <div class="item-quantity">Количество: ${item.quantity || 1}</div>
-            </div>
-            <div class="item-price">${formatPrice(item.unitPrice || item.price || 0)} BYN</div>
-          </div>
-        `).join('') : ''}
-      </div>
-      <div class="order-footer">
-        <div class="order-total">
-          <span class="total-label">Итого:</span>
-          <span class="total-amount">${formatPrice(order.totalAmount)} BYN</span>
-        </div>
-        <div class="order-actions">
-          ${order.status === 'processing' ? `
-            <button class="btn btn-secondary" onclick="cancelOrder(${order.id})">Отменить</button>
-          ` : ''}
-          <button class="btn btn-primary" onclick="viewOrderDetails(${order.id})">Подробнее</button>
-          ${order.trackingNumber ? `
-            <button class="btn btn-primary" onclick="trackOrder('${order.trackingNumber}')">Отследить</button>
-          ` : ''}
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  ordersContainer.innerHTML = ordersHTML;
-}
-
-// Функция для загрузки истории заказов
-async function loadOrderHistory() {
-  try {
-    const response = await fetch("/api/orders/getMyOrdersHistory", {
-      method: "GET",
-      credentials: "include"
-    });
-
-    if (!response.ok) {
-      throw new Error("Не удалось получить историю заказов");
-    }
-
-    const history = await response.json();
-    renderOrderHistory(history);
-
-  } catch (err) {
-    console.error("Ошибка загрузки истории заказов:", err);
-    document.querySelector('.history-list').innerHTML = '<p class="no-items">Не удалось загрузить историю заказов</p>';
-  }
-}
-
-// Функция для отрисовки истории заказов
-function renderOrderHistory(history) {
-  const historyContainer = document.querySelector('.history-list');
-
-  if (!history || history.length === 0) {
-    historyContainer.innerHTML = '<p class="no-items">История заказов пуста</p>';
-    return;
-  }
-
-  const historyHTML = history.map(order => `
-    <div class="history-item" data-category="${order.category || 'all'}">
-      <div class="history-image">
-        ${order.bookCover ?
-      `<img src="${order.bookCover}" alt="${order.bookTitle}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px;">` :
-      `<i class="fas fa-book"></i>`
-  }
-      </div>
-      <div class="history-info">
-        <h4 class="history-name">${order.bookTitle || 'Название книги'}</h4>
-        <p class="history-description">${order.author || 'Автор неизвестен'}</p>
-        <span class="history-date">${formatDate(order.orderDate || order.purchaseDate)}</span>
-        <div class="order-number">Заказ #${order.orderId || order.id}</div>
-      </div>
-      <div class="history-price">${formatPrice(order.unitPrice || order.price || 0)} BYN</div>
-      <div class="history-status status-${getOrderStatusClass(order.status)}">
-        <i class="${getOrderStatusIcon(order.status)}"></i>
-        ${getOrderStatusText(order.status)}
-      </div>
-    </div>
-  `).join('');
-
-  historyContainer.innerHTML = historyHTML;
-}
-
-function renderActiveOrders(orders) {
-  const ordersContainer = document.querySelector('.orders-list');
-
-  if (!orders || orders.length === 0) {
-    ordersContainer.innerHTML = '<p class="no-items">Нет активных заказов</p>';
-    return;
-  }
-
-  const ordersHTML = orders.map(order => `
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-info">
-          <h3 class="order-number">Заказ #${order.id}</h3>
-          <span class="order-date">${formatDate(order.orderDate)}</span>
-        </div>
-        <div class="order-status status-${getOrderStatusClass(order.status)}">
-          <i class="${getOrderStatusIcon(order.status)}"></i>
-          ${getOrderStatusText(order.status)}
-        </div>
-      </div>
-      <div class="order-items">
-        ${order.orderItems ? order.orderItems.map(item => `
-          <div class="order-item">
-            <div class="item-image">
               ${item.book && item.book.coverImageUrl ?
       `<img src="${item.book.coverImageUrl}" alt="${item.book.title}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">` :
       `<i class="fas fa-book"></i>`
@@ -576,15 +453,561 @@ function renderActiveOrders(orders) {
             <button class="btn btn-secondary" onclick="cancelOrder(${order.id})">Отменить</button>
           ` : ''}
           <button class="btn btn-primary" onclick="viewOrderDetails(${order.id})">Подробнее</button>
-          ${order.trackingNumber ? `
-            <button class="btn btn-primary" onclick="trackOrder('${order.trackingNumber}')">Отследить</button>
-          ` : ''}
         </div>
       </div>
     </div>
   `).join('');
 
   ordersContainer.innerHTML = ordersHTML;
+}
+
+async function loadOrderHistory() {
+  try {
+    await loadReviews();
+
+    const response = await fetch("/api/orders/getMyOrdersHistory", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      throw new Error("Не удалось получить историю заказов");
+    }
+
+    const history = await response.json();
+    renderOrderHistory(history);
+
+  } catch (err) {
+    console.error("Ошибка загрузки истории заказов:", err);
+    document.querySelector('.history-list').innerHTML = '<p class="no-items">Не удалось загрузить историю заказов</p>';
+  }
+}
+
+function renderOrderHistory(history) {
+  const historyContainer = document.querySelector('.history-list');
+
+  if (!history || history.length === 0) {
+    historyContainer.innerHTML = '<p class="no-items">История заказов пуста</p>';
+    return;
+  }
+
+  const historyHTML = history.map(order => {
+    return order.orderItems.map(orderItem => {
+      const hasReview = userReviews.some(review => review.book && review.book.id === orderItem.book.id);
+
+      return `
+      <div class="history-item" data-category="all">
+        <div class="history-image">
+          ${orderItem.book && orderItem.book.coverImageUrl ?
+          `<img src="${orderItem.book.coverImageUrl}" alt="${orderItem.book.title}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px;">` :
+          `<i class="fas fa-book"></i>`
+      }
+        </div>
+        <div class="history-info">
+          <h4 class="history-name">${orderItem.book ? orderItem.book.title : 'Название книги'}</h4>
+          <p class="history-description">${orderItem.book ? (orderItem.book.authorName || 'Автор неизвестен') : 'Автор неизвестен'}</p>
+          <span class="history-date">${formatDate(order.orderDate)}</span>
+          <div class="order-number">Заказ #${order.id}</div>
+          <div class="item-quantity">Количество: ${orderItem.quantity || 1}</div>
+        </div>
+        <div class="history-price">${formatPrice(orderItem.unitPrice || 0)} BYN</div>
+        <div class="history-status-container" style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+          <div class="history-status status-${getOrderStatusClass(order.status)}">
+            <i class="${getOrderStatusIcon(order.status)}"></i>
+            ${getOrderStatusText(order.status)}
+          </div>
+          ${order.status === 'DELIVERED' && !hasReview ? `
+            <button class="btn-review" onclick="showReviewModal(${orderItem.book.id}, '${orderItem.book.title}')" style="padding: 5px 10px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;">
+              Оставить отзыв
+            </button>
+          ` : ''}
+        </div>
+      </div>
+    `}).join('');
+  }).join('');
+
+  historyContainer.innerHTML = historyHTML;
+}
+
+async function viewOrderDetails(orderId) {
+  try {
+    const response = await fetch(`/api/orders/getOrderDetails/${orderId}`, {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      throw new Error("Не удалось получить детали заказа");
+    }
+
+    const order = await response.json();
+    showOrderDetailsModal(order);
+
+  } catch (error) {
+    console.error("Ошибка при получении деталей заказа:", error);
+    showNotification("Не удалось загрузить детали заказа", "error");
+  }
+}
+
+function showOrderDetailsModal(order) {
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  `;
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  modalContent.style.cssText = `
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  `;
+
+  const orderDate = formatDate(order.orderDate);
+  const paymentMethod = getPaymentMethodText(order.paymentMethod);
+
+  modalContent.innerHTML = `
+    <div class="order-details-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0;">
+      <h2 style="margin: 0; color: #333;">Детали заказа #${order.id}</h2>
+      <button class="close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+    </div>
+
+    <div class="order-info" style="margin-bottom: 25px;">
+      <div class="info-row" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="font-weight: bold; color: #555;">Дата заказа:</span>
+        <span style="color: #333;">${orderDate}</span>
+      </div>
+      <div class="info-row" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="font-weight: bold; color: #555;">Статус:</span>
+        <span class="status-${getOrderStatusClass(order.status)}" style="padding: 4px 12px; border-radius: 20px; font-size: 14px;">
+          <i class="${getOrderStatusIcon(order.status)}"></i>
+          ${getOrderStatusText(order.status)}
+        </span>
+      </div>
+      <div class="info-row" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="font-weight: bold; color: #555;">Способ оплаты:</span>
+        <span style="color: #333;">${paymentMethod}</span>
+      </div>
+      ${order.trackingNumber ? `
+        <div class="info-row" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+          <span style="font-weight: bold; color: #555;">Трек номер:</span>
+          <span style="color: #333; font-family: monospace;">${order.trackingNumber}</span>
+        </div>
+      ` : ''}
+    </div>
+
+    <div class="shipping-address" style="margin-bottom: 25px;">
+      <h3 style="margin-bottom: 10px; color: #333;">Адрес доставки</h3>
+      <p style="color: #666; margin: 0; padding: 10px; background: #f9f9f9; border-radius: 6px;">
+        ${order.shippingAddress || 'Адрес не указан'}
+      </p>
+    </div>
+
+    <div class="order-items" style="margin-bottom: 25px;">
+      <h3 style="margin-bottom: 15px; color: #333;">Товары в заказе</h3>
+      <div class="items-list">
+        ${order.orderItems ? order.orderItems.map(item => {
+    const hasReview = userReviews.some(review => review.bookId === item.book.id);
+    return `
+          <div class="order-item-detail" style="display: flex; align-items: center; padding: 15px; background: #f9f9f9; border-radius: 8px; margin-bottom: 10px;">
+            <div class="item-image" style="margin-right: 15px;">
+              ${item.book && item.book.coverImageUrl ?
+        `<img src="${item.book.coverImageUrl}" alt="${item.book.title}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px;">`
+        :
+        `<i class="fas fa-book" style="font-size: 24px; color: #ccc;"></i>`
+    }
+            </div>
+            <div class="item-info" style="flex: 1;">
+              <h4 style="margin: 0 0 5px 0; color: #333;">${item.book ? item.book.title : 'Название книги'}</h4>
+              <p style="margin: 0 0 5px 0; color: #666;">${item.book ? (item.book.authorName || 'Автор неизвестен') : 'Автор неизвестен'}</p>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #888;">Количество: ${item.quantity || 1}</span>
+                <span style="font-weight: bold; color: #333;">${formatPrice(item.unitPrice || 0)} BYN × ${item.quantity || 1}</span>
+              </div>
+              ${order.status === 'DELIVERED' ? `
+                <div style="margin-top: 10px;">
+                  ${!hasReview ? `
+                    <button class="btn-review" onclick="showReviewModal(${item.book.id}, '${item.book.title}')" style="padding: 5px 10px; background: #2c5530; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                      Оставить отзыв
+                    </button>
+                  ` : `
+                    <span style="color: #666; font-size: 12px;">Отзыв оставлен</span>
+                  `}
+                </div>
+              ` : ''}
+            </div>
+            <div class="item-subtotal" style="margin-left: 15px; text-align: right;">
+              <strong style="color: #2c5530; font-size: 16px;">${formatPrice((item.unitPrice || 0) * (item.quantity || 1))} BYN</strong>
+            </div>
+          </div>
+        `}).join('') : '<p>Товары не найдены</p>'}
+      </div>
+    </div>
+
+    <div class="order-total-details" style="border-top: 2px solid #e0e0e0; padding-top: 15px;">
+      <div class="total-row" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="font-weight: bold; color: #555;">Стоимость товаров:</span>
+        <span style="color: #333;">${formatPrice(order.totalAmount)} BYN</span>
+      </div>
+      <div class="total-row" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="font-weight: bold; color: #555;">Доставка:</span>
+        <span style="color: #2c5530;">Бесплатно</span>
+      </div>
+      <div class="total-row" style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; padding-top: 10px; border-top: 1px solid #e0e0e0;">
+        <span style="color: #333;">Итого:</span>
+        <span style="color: #2c5530;">${formatPrice(order.totalAmount)} BYN</span>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top: 25px; text-align: right;">
+      <button class="btn btn-primary" onclick="this.closest('.modal').remove()" style="padding: 10px 20px; background: #2c5530; color: white; border: none; border-radius: 6px; cursor: pointer;">
+        Закрыть
+      </button>
+    </div>
+  `;
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  const closeBtn = modalContent.querySelector('.close-btn');
+  closeBtn.addEventListener('click', () => {
+    modal.remove();
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
+
+  const closeModal = () => modal.remove();
+  const handleEscape = (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      document.removeEventListener('keydown', handleEscape);
+    }
+  };
+  document.addEventListener('keydown', handleEscape);
+}
+
+function showReviewModal(bookId, bookTitle) {
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+  `;
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  modalContent.style.cssText = `
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  `;
+
+  modalContent.innerHTML = `
+    <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0;">
+      <h2 style="margin: 0; color: #333;">Оставить отзыв</h2>
+      <button class="close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+    </div>
+
+    <div class="book-info" style="margin-bottom: 20px;">
+      <h3 style="margin: 0 0 10px 0; color: #333;">${bookTitle}</h3>
+    </div>
+
+    <div class="review-form">
+      <div class="rating-section" style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 10px; font-weight: bold; color: #555;">Оценка:</label>
+        <div class="star-rating" style="display: flex; gap: 5px;">
+          ${[1, 2, 3, 4, 5].map(star => `
+            <button type="button" class="star-btn" data-rating="${star}" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #ddd;">
+              <i class="far fa-star"></i>
+            </button>
+          `).join('')}
+        </div>
+        <input type="hidden" id="reviewRating" value="0">
+      </div>
+
+      <div class="comment-section" style="margin-bottom: 20px;">
+        <label for="reviewComment" style="display: block; margin-bottom: 10px; font-weight: bold; color: #555;">Комментарий:</label>
+        <textarea id="reviewComment" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; resize: vertical;" placeholder="Напишите ваш отзыв..."></textarea>
+      </div>
+
+      <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" onclick="closeReviewModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+          Отмена
+        </button>
+        <button type="button" class="btn btn-primary" onclick="submitReview(${bookId})" style="padding: 10px 20px; background: #2c5530; color: white; border: none; border-radius: 6px; cursor: pointer;">
+          Отправить отзыв
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  window.currentReviewModal = modal;
+
+  const closeBtn = modalContent.querySelector('.close-btn');
+  closeBtn.addEventListener('click', () => {
+    closeReviewModal();
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeReviewModal();
+    }
+  });
+
+  const starButtons = modalContent.querySelectorAll('.star-btn');
+  let selectedRating = 0;
+
+  starButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      selectedRating = index + 1;
+      starButtons.forEach((btn, i) => {
+        const icon = btn.querySelector('i');
+        if (i < selectedRating) {
+          icon.className = 'fas fa-star';
+          btn.style.color = '#ffc107';
+        } else {
+          icon.className = 'far fa-star';
+          btn.style.color = '#ddd';
+        }
+      });
+      document.getElementById('reviewRating').value = selectedRating;
+    });
+  });
+
+  const closeModal = () => closeReviewModal();
+  const handleEscape = (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      document.removeEventListener('keydown', handleEscape);
+    }
+  };
+  document.addEventListener('keydown', handleEscape);
+}
+
+function closeReviewModal() {
+  if (window.currentReviewModal) {
+    window.currentReviewModal.remove();
+    window.currentReviewModal = null;
+  }
+}
+
+async function loadReviews() {
+  try {
+    const profileResponse = await fetch("/profile/getAllProfileInfo", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!profileResponse.ok) {
+      throw new Error("Не удалось получить информацию о профиле");
+    }
+
+    const profile = await profileResponse.json();
+
+    const response = await fetch(`/api/reviews/getMyReviews/${profile.id}`, {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      throw new Error("Не удалось получить отзывы");
+    }
+
+    const reviews = await response.json();
+    userReviews = reviews;
+    renderReviews(reviews);
+
+  } catch (error) {
+    console.error("Ошибка при загрузке отзывов:", error);
+    const reviewsContainer = document.querySelector('.reviews-container');
+    if (reviewsContainer) {
+      reviewsContainer.innerHTML = '<p class="no-items">Не удалось загрузить отзывы</p>';
+    }
+  }
+}
+
+function canAddReview(bookId) {
+  return !userReviews.some(review => review.book && review.book.id === bookId);
+}
+
+async function submitReview(bookId) {
+  const rating = parseInt(document.getElementById('reviewRating').value);
+  const comment = document.getElementById('reviewComment').value.trim();
+
+  if (rating === 0) {
+    showNotification("Пожалуйста, выберите оценку", "error");
+    return;
+  }
+
+  if (!comment) {
+    showNotification("Пожалуйста, напишите комментарий", "error");
+    return;
+  }
+
+  try {
+    const profileResponse = await fetch("/profile/getAllProfileInfo", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!profileResponse.ok) {
+      throw new Error("Не удалось получить информацию о профиле");
+    }
+
+    const profile = await profileResponse.json();
+
+    const reviewData = {
+      userId: profile.id,
+      bookId: bookId,
+      rating: rating,
+      comment: comment,
+      reviewDate: new Date().toISOString(),
+      isApproved: true
+    };
+
+    const response = await fetch("/api/reviews/createReview", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(reviewData)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Не удалось добавить отзыв: ${errorText}`);
+    }
+
+    const result = await response.json();
+    showNotification("Отзыв успешно добавлен!", "success");
+
+    await createUserActivity('REVIEW_ADDED', `Оставлен отзыв на книгу`);
+    closeReviewModal();
+    await loadReviews();
+
+    return result;
+
+  } catch (error) {
+    console.error("Ошибка при добавлении отзыва:", error);
+    showNotification("Ошибка при добавлении отзыва: " + error.message, "error");
+  }
+}
+
+async function deleteReview(reviewId) {
+  if (!confirm('Вы уверены, что хотите удалить этот отзыв?')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/reviews/deleteReview/${reviewId}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      throw new Error("Не удалось удалить отзыв");
+    }
+
+    showNotification("Отзыв успешно удален", "success");
+    await loadReviews();
+
+  } catch (error) {
+    console.error("Ошибка при удалении отзыва:", error);
+    showNotification("Ошибка при удалении отзыва", "error");
+  }
+}
+
+function renderReviews(reviews) {
+  const reviewsContainer = document.querySelector('.reviews-container');
+  if (!reviewsContainer) return;
+
+  if (!reviews || reviews.length === 0) {
+    reviewsContainer.innerHTML = '<p class="no-items">Вы еще не оставляли отзывов</p>';
+    return;
+  }
+
+  const reviewsHTML = reviews.map(review => `
+    <div class="review-item" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 15px; background: #f9f9f9;">
+      <div class="review-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+        <div class="book-info">
+          <h4 style="margin: 0 0 5px 0; color: #333;">${review.bookTitle || (review.book ? review.book.title : 'Название книги')}</h4>
+          <p style="margin: 0; color: #666; font-size: 14px;">${review.authorName || (review.book ? review.book.authorName : 'Автор неизвестен')}</p>
+        </div>
+        <div class="review-rating">
+          ${renderStars(review.rating)}
+        </div>
+      </div>
+      <div class="review-comment">
+        <p style="margin: 0; color: #444; line-height: 1.5;">${review.comment || 'Без комментария'}</p>
+      </div>
+      <div class="review-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
+        <span class="review-date" style="color: #888; font-size: 12px;">
+          ${formatDate(review.createdAt || review.reviewDate || new Date())}
+        </span>
+        <button class="btn-delete-review" onclick="deleteReview(${review.id})" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+          Удалить
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  reviewsContainer.innerHTML = reviewsHTML;
+}
+
+function renderStars(rating) {
+  let starsHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= rating) {
+      starsHTML += '<i class="fas fa-star" style="color: #ffc107;"></i>';
+    } else {
+      starsHTML += '<i class="far fa-star" style="color: #ddd;"></i>';
+    }
+  }
+  return starsHTML;
+}
+
+function getPaymentMethodText(paymentMethod) {
+  const paymentMap = {
+    'PURSE': 'Электронный кошелек',
+    'DEBIT_CARD': 'Банковская карта',
+    'CREDIT_CARD': 'Кредитная карта',
+    'ELECTRONICS_PURCHASE': 'Электронный платеж'
+  };
+  return paymentMap[paymentMethod] || 'Неизвестно';
 }
 
 function getTimeAgo(dateString) {
@@ -744,6 +1167,7 @@ async function cancelOrder(orderId) {
       }
 
       showNotification("Заказ успешно отменен", "success");
+      await toggleUserMenu();
       await loadActiveOrders();
 
     } catch (error) {
@@ -753,17 +1177,6 @@ async function cancelOrder(orderId) {
   }
 }
 
-function viewOrderDetails(orderId) {
-  console.log("Просмотр деталей заказа:", orderId);
-  showNotification("Функция просмотра деталей заказа в разработке", "info");
-}
-
-function trackOrder(trackingNumber) {
-  console.log("Отслеживание заказа:", trackingNumber);
-  showNotification("Функция отслеживания заказа в разработке", "info");
-}
-
-// Функция для фильтрации истории заказов
 function filterOrderHistory(filter) {
   const historyItems = document.querySelectorAll('.history-item');
 
@@ -797,11 +1210,12 @@ function setupEventListeners() {
         loadOrderHistory();
       } else if (targetSection === 'orders') {
         loadActiveOrders();
+      } else if (targetSection === 'reviews') {
+        loadReviews();
       }
     });
   });
 
-  // Добавляем обработчики для фильтров истории заказов
   const filterBtns = document.querySelectorAll('.filter-btn');
   filterBtns.forEach(btn => {
     btn.addEventListener('click', function() {
@@ -983,8 +1397,6 @@ async function createReplenishment(amount, paymentMethod) {
       paymentMethod: paymentMethod
     };
 
-    console.log('Отправляемые данные пополнения:', replenishmentData);
-
     const response = await fetch("/api/replenishments/newReplenishment", {
       method: "POST",
       credentials: "include",
@@ -1002,6 +1414,7 @@ async function createReplenishment(amount, paymentMethod) {
     const result = await response.json();
     showNotification("Баланс успешно пополнен!", "success");
 
+    await createUserActivity('BALANCE_TOP_UP', `Пополнен баланс на ${amount} BYN`);
     await toggleUserMenu();
 
     return result;
@@ -1010,5 +1423,76 @@ async function createReplenishment(amount, paymentMethod) {
     console.error("Ошибка при пополнении баланса:", error);
     showNotification("Ошибка при пополнении баланса: " + error.message, "error");
     throw error;
+  }
+}
+
+function renderActivities(activities) {
+  const activitiesContainer = document.getElementById('activity-list');
+  if (!activities || activities.length === 0) {
+    activitiesContainer.innerHTML = '<p class="no-activities">Активности не найдены</p>';
+    return;
+  }
+
+  const activitiesHTML = activities.map(activity => {
+    const iconClass = getActivityIcon(activity.type);
+    const title = getActivityTitle(activity.type);
+    const timeAgo = getTimeAgo(activity.createdAt);
+
+    return `
+      <div class="activity-item">
+        <div class="activity-icon">
+          <i class="${iconClass}"></i>
+        </div>
+        <div class="activity-content">
+          <h4 class="activity-title">${title}</h4>
+          <p class="activity-description">${activity.description || ''}</p>
+          <span class="activity-time">${timeAgo}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  activitiesContainer.innerHTML = activitiesHTML;
+}
+
+async function createUserActivity(activityType, activityDescription) {
+  try {
+    const profileResponse = await fetch("/profile/getAllProfileInfo", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!profileResponse.ok) {
+      throw new Error("Не удалось получить информацию о профиле");
+    }
+
+    const profile = await profileResponse.json();
+
+    const activityData = {
+      userId: profile.id,
+      activityType: activityType,
+      activityDescription: activityDescription
+    };
+
+    const response = await fetch("/profile/createNewActivity", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(activityData)
+    });
+
+    if (!response.ok) {
+      throw new Error("Не удалось создать активность");
+    }
+
+    const result = await response.json();
+    await toggleUserMenu();
+
+    return result;
+
+  } catch (error) {
+    console.error("Ошибка при создании активности:", error);
   }
 }

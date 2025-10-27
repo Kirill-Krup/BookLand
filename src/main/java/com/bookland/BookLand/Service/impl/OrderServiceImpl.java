@@ -79,6 +79,11 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Transactional
   public void deleteOrder(Long id) {
+    Order order = orderRepository.findById(id)
+        .orElseThrow(()->new RuntimeException(""));
+    User user = userRepository.findUserById(order.getUser().getId());
+    user.setWallet(user.getWallet() + order.getTotalAmount());
+    userRepository.save(user);
     orderRepository.deleteById(id);
   }
 
@@ -104,4 +109,12 @@ public class OrderServiceImpl implements OrderService {
         .collect(Collectors.toList());
     return orderMapper.toDTO(historyOrders);
   }
+
+  @Override
+  public OrderDTO getOrderDetails(Long id) {
+    Order order = orderRepository.findById(id)
+        .orElseThrow(()->new RuntimeException("Error"));
+    return orderMapper.toDTO(order);
+  }
+
 }

@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleUserMenu();
     animateOnScroll();
     createScrollProgress();
+    getPopularBooks();
 
     const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
     navLinks.forEach(link => {
@@ -699,12 +700,17 @@ style.textContent = `
     }
     
     .cart-count.updated {
-        animation: pulse 0.6s ease-in-out;
+        animation: subtle-pulse 0.6s ease-in-out;
     }
     
-    @keyframes pulse {
+    /* Полностью убрать анимацию с баджей */
+    .book-badge {
+        animation: none !important;
+    }
+    
+    @keyframes subtle-pulse {
         0% { transform: scale(1); }
-        50% { transform: scale(1.5); }
+        50% { transform: scale(1.1); }
         100% { transform: scale(1); }
     }
     
@@ -739,3 +745,104 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+
+async function getPopularBooks(){
+    try{
+        const response = await fetch("/books/fivePopularBooks",{
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: "include"
+        });
+
+        if(!response.ok){
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const books = await response.json();
+
+        displayPopularBooks(books);
+
+    }catch(err){
+        console.error("Ошибка при загрузке популярных книг:", err);
+        showPopularBooksError();
+    }
+}
+
+function displayPopularBooks(books) {
+    const booksGrid = document.querySelector('.featured-books .books-grid');
+    if (!booksGrid) {
+        console.error('Контейнер для популярных книг не найден');
+        return;
+    }
+
+    booksGrid.innerHTML = '';
+
+    books.forEach((book, index) => {
+        const bookCard = createPopularBookCard(book, index);
+        booksGrid.appendChild(bookCard);
+    });
+}
+
+function createPopularBookCard(book, index) {
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    card.dataset.bookId = book.id;
+
+    const gradients = ['book-gradient-1', 'book-gradient-2', 'book-gradient-3', 'book-gradient-4'];
+    const gradientClass = gradients[index % gradients.length];
+
+    const price = typeof book.price === "number"
+        ? (book.price % 1 === 0 ? Math.floor(book.price) : book.price.toFixed(2))
+        : book.price;
+
+    card.innerHTML = `
+        <div class="book-image">
+            ${book.coverImageUrl ?
+        `<img src="${book.coverImageUrl}" alt="${book.title}" class="book-cover-image" onerror="this.style.display='none'">` :
+        ''
+    }
+            <div class="book-gradient ${gradientClass} ${book.coverImageUrl ? 'hidden' : ''}">
+                <div class="book-spine"></div>
+                <div class="book-pages"></div>
+                <div class="book-title-overlay">${book.title}</div>
+            </div>
+            <div class="book-badge popular-badge">Популярная</div>
+            <div class="book-overlay">
+                <button class="btn btn-primary btn-small add-to-cart-btn" data-book-id="${book.id}">В корзину</button>
+            </div>
+        </div>
+        <div class="book-info">
+            <h3 class="book-title" title="${book.title}">${book.title}</h3>
+            <p class="book-author">${book.authorName || 'Автор неизвестен'}</p>
+            ${book.genre ? `<p class="book-genre">${book.genre}</p>` : ''}
+            <div class="book-rating">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <span class="rating-text">4.5 (10)</span>
+            </div>
+            <div class="book-price">${price} руб.</div>
+        </div>
+    `;
+
+    return card;
+}
+
+function showPopularBooksError() {
+    const booksGrid = document.querySelector('.featured-books .books-grid');
+    if (booksGrid) {
+        booksGrid.innerHTML = `
+            <div class="books-error" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                <p>Не удалось загрузить популярные книги</p>
+                <button class="btn btn-secondary" onclick="getPopularBooks()">Попробовать снова</button>
+            </div>
+        `;
+    }
+}
+

@@ -56,7 +56,23 @@ body {
     color: #4f46e5;
     border: 2px solid #4f46e5;
 }
+.popular-badge {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+}
 
+.book-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #3b82f6;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 2;
+}
 .btn-outline:hover {
     background: #4f46e5;
     color: white;
